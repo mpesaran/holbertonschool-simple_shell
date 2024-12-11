@@ -54,5 +54,16 @@ file_1 file_2 file_3
 
 See AUTHORS file for list of contributors.
 
+## Limitations
 
+- Does not support advanced shell features
+- limited to custom built-in command support
+- Minimal error handling
+
+## Learning Objectives
+
+- Understand process creation and management
+- Implement basic system calls
+- Practice Basic C programming
+- Learn shell internals
 
