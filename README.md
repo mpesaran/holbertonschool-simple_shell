@@ -43,3 +43,10 @@ $ echo "/bin/ls" | ./hsh
 file_1 file_2 file_3
 ```
 
+## Files
+
+- `main.c`: Main shell program file (Entry Point)
+- `shell.h`: Header file with list of function prototypes
+- `prompt.c`: Prompt handling functions
+- `execute.c`: Command execution logic
+
