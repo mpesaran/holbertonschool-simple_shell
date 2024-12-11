@@ -50,3 +50,9 @@ file_1 file_2 file_3
 - `prompt.c`: Prompt handling functions
 - `execute.c`: Command execution logic
 
+## Authors
+
+See AUTHORS file for list of contributors.
+
+
+
