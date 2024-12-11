@@ -51,6 +51,7 @@ $ echo "Hello World"
 $ env
 $ exit
 ```
+
 Pressing Ctrl+D will exit the shell.
 
 
