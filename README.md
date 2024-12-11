@@ -25,3 +25,21 @@ Perform fundamental shell functions.
 ```
 gcc -Wall -Werror -Wextra -pedantic - std=gnu89 *.c -o hsh
 ```
+
+## Usage
+
+### Interactive Mode
+
+```
+$ ./hsh
+($) /bin/ls
+file_1 file_2 file_3
+($) exit
+```
+
+### Non-Interactive Mode
+```
+$ echo "/bin/ls" | ./hsh
+file_1 file_2 file_3
+```
+
