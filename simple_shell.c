@@ -4,14 +4,16 @@ int main (void)
 {	
 	char *input; /* input from terminal */
 	char *argv[100]; /* execve arguments */
+	/*int flag; */
 
 	while (1) /* neverending loop for prompt */
 	{
 		printf("$ ");
 		input = getline_process();
 		strtok_process(input, argv);	
-		execve_process(
+		execve_process(argv);
 	}
+	return (0);
 }
 
 /**
@@ -72,5 +74,40 @@ void strtok_process(char *input, char **argv)
 	return;	
 } 
 
+/**
+ * execve - function to create a child pid and execute the command
+ *
+ * @argv : argument array
+ * Return: void
+ */
 
-void execve(char **argv
+void execve(char **argv)
+{	
+	extern char **environ; /* environmental variable from system */
+	int flag, status;
+
+	pid_t child_pid;
+
+	child_pid = fork(); /* create a child process */
+	
+	if (child_pid < 0)
+	{
+		perror("Error in child pid");
+		exit (1);
+	}
+	
+	if (child_pid == 0) /* if 0, child_pid  */
+	{	
+		flag = execve(argv[0], argv, environ);
+		if (flag == -1) /* issue with execve */
+		{
+			perror("Error in execve\n");
+			exit(1);
+		}
+	}	
+	else /* parent pid is */
+	{
+		wait(&status); /* wait for child_pid to finish */
+	}
+	return;
+}
