@@ -70,10 +70,13 @@ void strtok_process(char *input, char **argv)
 
 	token = strtok(input, " "); /* start tokenizing with space as delimiter */
 	while (token != NULL) 
-	{	count = count + 1;
-        	argv[count] = token; /* store token into argv[count] */
+	{	/*count = count + 1; */
+		argv[count] = token; /* store token into argv[count] */
         	token = strtok(NULL, " "); /* continue tokenizing */
-    	}
+		printf("Token is %s\n", token); /*debugging */
+		printf("argc[%d] is %s\n", count, argv[count]); /*debugging */
+    		count++;
+	}
 	argv[count] = NULL; /* terminate last argument */
 	return;	
 } 
@@ -102,7 +105,10 @@ void execve_process(char **argv)
 	
 	if (child_pid == 0) /* if 0, child_pid  */
 	{	
-		flag = execve(argv[0], argv, environ);
+		/*flag = execve(argv[0], argv, environ); */
+		printf("Environ is %s\n", *environ); /*for debugging */
+		printf("argv[0] is %s\n", argv[0]); /* for debugging */
+		flag = execve(argv[0], argv, NULL);
 		if (flag == -1) /* issue with execve */
 		{
 			perror("Error in execve\n");
