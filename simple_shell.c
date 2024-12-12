@@ -9,8 +9,8 @@ int main (void)
 	{
 		printf("$ ");
 		input = getline_process();
-		strtok_process();	
-
+		strtok_process(input, argv);	
+		execve_process(
 	}
 }
 
@@ -49,6 +49,14 @@ char *getline_process(void)
 	return (buffer);
 }
 
+/**
+ * strtok - function to tokenize the input
+ *
+ * @input : string input from terminal
+ * @argv : argument array
+ * Return: void
+ */
+
 void strtok_process(char *input, char **argv)
 {
 	char *token;
@@ -58,7 +66,11 @@ void strtok_process(char *input, char **argv)
 	while (token != NULL) 
 	{	count = count + 1;
         	argv[count] = token; /* store token into argv[count] */
-        	token = strtok(NULL, " "); /* continue tokenizing 
+        	token = strtok(NULL, " "); /* continue tokenizing */
     	}
-
+	argv[count] = NULL; /* terminate last argument */
+	return;	
 } 
+
+
+void execve(char **argv
