@@ -1,5 +1,9 @@
 #include "shells.h"
 
+char *getline_process(void);
+void strtok_process(char *input, char **argv);
+void execve_process(char **argv);
+
 int main (void)
 {	
 	char *input; /* input from terminal */
@@ -41,12 +45,12 @@ char *getline_process(void)
 		{
 			perror("Error in getline\n");
 			/*exit (1);*/
-			continue;
+			/*continue;*/
 		}
 	}
 	if (buffer[nread - 1] == '\n') /* remove newline at the end */
 	{
-		buffer[nread - 1] == '\0';
+		buffer[nread - 1] = '\0';
 	}
 	return (buffer);
 }
@@ -81,7 +85,7 @@ void strtok_process(char *input, char **argv)
  * Return: void
  */
 
-void execve(char **argv)
+void execve_process(char **argv)
 {	
 	extern char **environ; /* environmental variable from system */
 	int flag, status;
