@@ -72,12 +72,15 @@ void strtok_process(char *input, char **argv)
 	while (token != NULL) 
 	{	/*count = count + 1; */
 		argv[count] = token; /* store token into argv[count] */
-        	token = strtok(NULL, " "); /* continue tokenizing */
+        	/*token = strtok(NULL, " ");  continue tokenizing */
 		printf("Token is %s\n", token); /*debugging */
 		printf("argc[%d] is %s\n", count, argv[count]); /*debugging */
     		count++;
+		token  = strtok(NULL, " ");
+		/*count++; */
 	}
 	argv[count] = NULL; /* terminate last argument */
+	printf("last count is %d\n", count); /* for debugging */
 	return;	
 } 
 
@@ -91,7 +94,8 @@ void strtok_process(char *input, char **argv)
 void execve_process(char **argv)
 {	
 	extern char **environ; /* environmental variable from system */
-	int flag, status;
+	/*int flag; */
+	int status;
 
 	pid_t child_pid;
 
@@ -108,8 +112,11 @@ void execve_process(char **argv)
 		/*flag = execve(argv[0], argv, environ); */
 		printf("Environ is %s\n", *environ); /*for debugging */
 		printf("argv[0] is %s\n", argv[0]); /* for debugging */
-		flag = execve(argv[0], argv, NULL);
-		if (flag == -1) /* issue with execve */
+		printf("argv[1] is %s\n", argv[1]); /* for debugging */
+		/*flag = execve(argv[0], argv, NULL); */
+		/*if (flag == -1)  issue with execve */
+		
+		if (execve(argv[0], argv, NULL) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
