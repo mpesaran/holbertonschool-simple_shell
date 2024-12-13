@@ -1,27 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
+#include <shell.h>
 
-/*
- * function_name - Does something i'm yet to code
- * @command_name: The command to execute once i've given it a name
- * Return: '0' for success and '-1' for error (failure)
- */
+// Print shell promt (interactive vs non-interactive
+// -> print_prompt()
 
-int command_handler (char *input)
-{
-	pid_t PID;
-	int child_status;
-	char *args[2];
-	/*
-	 * @PID 	-> Store Process ID
-	 * @child_status-> Store Child Process Status (Sucess vs Failure)
-	 * @args	-> Argument array for execve (input + NULL terminator to complete the input) (0 = Input, 1 = NULL)
-	 */
+// read the users command input
+// -> read_command()
 
-	input[strcspn(input, "\n")] = 0;
+// Remove trailing space from input
+// -> remove_trail()
 
-	return 0;
-}
+// Executes string type commands
+// -> command_handler()
+

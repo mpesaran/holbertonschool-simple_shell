@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-
+#include <shell.h>
 
 /**
 * main - Entry point for simple shell
@@ -11,16 +6,17 @@
 */
 int main(void)
 {
-	char *line = NULL;
-	size_t line_length = 0;
-	ssize_t char_count;
-	/*
-	 * @line	-> Pointer to store input line/text
-	 * @line_length 	-> Dynamic memory allocation (auto allocates memory for @line input)
-	 * @char_count	-> Number of characters reda by 'getline'
-	 */
-
-	char_count = getline(&line, &line_length, stdin);
+char *line;
+	
+	while(1) {
+	
+	// Interactive vs non-interactive
+	// Print promt vs Display prompt
+	// If print prompt then read the input
+	// valid input? yes = do something, no = exit shell and or loop back to enter command again. 
+	// handle and process valid input
+	// once handled and executed loop back to enter another command
+	}			
 	
 	return 0;
 }
