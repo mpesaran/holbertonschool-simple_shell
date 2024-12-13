@@ -12,7 +12,7 @@ int main (void)
 
 	while (1) /* neverending loop for prompt */
 	{
-		printf("($) ");
+		printf("$ ");
 		input = getline_process();
 		strtok_process(input, argv);	
 		execve_process(argv);
@@ -51,12 +51,6 @@ char *getline_process(void)
 	if (buffer[nread - 1] == '\n') /* remove newline at the end */
 	{
 		buffer[nread - 1] = '\0';
-	}
-	if (strcmp(buffer, "exit") == 0)
-	{
-		printf("Exiting\n");
-		exit (1);
-
 	}
 	return (buffer);
 }
