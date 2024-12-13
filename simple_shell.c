@@ -7,7 +7,7 @@ void execve_process(char **argv);
 int main (void)
 {	
 	char *input; /* input from terminal */
-	char *argv[100]; /* execve arguments */
+	char *argv[1024]; /* execve arguments */
 	/*int flag; */
 
 	while (1) /* neverending loop for prompt */
@@ -95,7 +95,9 @@ void execve_process(char **argv)
 {	
 	extern char **environ; /* environmental variable from system */
 	/*int flag; */
+	/*char *envList[] = {"HOME=/root", "PATH=/bin/", NULL }; user defined env */
 	int status;
+	char temp[100];
 
 	pid_t child_pid;
 
@@ -106,7 +108,9 @@ void execve_process(char **argv)
 		perror("Error in child pid");
 		exit (1);
 	}
-	
+	/*temp = strcat("/bin/",argv[0]);*/
+	sprintf(temp, "../bin/%s", argv[0]);
+	printf("Temp is %s\n", temp); /*debugging */
 	if (child_pid == 0) /* if 0, child_pid  */
 	{	
 		/*flag = execve(argv[0], argv, environ); */
@@ -116,7 +120,9 @@ void execve_process(char **argv)
 		/*flag = execve(argv[0], argv, NULL); */
 		/*if (flag == -1)  issue with execve */
 		
-		if (execve(argv[0], argv, NULL) == -1)
+		/* if (execve(argv[0], argv, NULL) == -1) */
+		/* if (execve(argv[0], argv, envList) == -1) */
+		if (execve(temp, argv, NULL) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
