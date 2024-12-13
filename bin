@@ -5,52 +5,21 @@ extern char **environ; /* environmental variable from system */
 char *getline_process(void);
 void strtok_process(char *input, char **argv);
 void execve_process(char **argv);
-void non_interactive_process(int ac, char *av[]);
 
 int main (void)
-/*int main (int argc, char *argv[], char *env[]) */
-/*int main (int argc, char *argv[])*/
 {	
 	char *input; /* input from terminal */
-	char *argv_local[1024]; /* execve arguments */
+	char *argv[1024]; /* execve arguments */
 	/*int flag; */
-	/*non_interactive_process(argc, argv); */
 
 	while (1) /* neverending loop for prompt */
-	{	
-		if (isatty(STDIN_FILENO) != 0) 
-		{	printf("($) ");
-			input = getline_process();
-			strtok_process(input,argv_local);	
-			execve_process(argv_local);
-		}
-		else
-		{
-			exit(1);
-		}
+	{
+		printf("($) ");
+		input = getline_process();
+		strtok_process(input, argv);	
+		execve_process(argv);
 	}
 	return (0);
-}
-
-
-void non_interactive_process(int ac, char *av[])
-{
-	printf("ac %d, av[0] is %s\n", ac, av[0]);
-	printf("Testing\n");
-	if (ac < 1)
-	{
-		printf("Error\n");
-		exit(1);
-	}
-	else
-	{
-		if (execve(av[0],av, environ) == -1)
-                {
-                        perror("Error in execve\n");
-                        exit(1);
-                }
-	}
-
 }
 
 /**
