@@ -15,3 +15,26 @@ void print_prompt(void) {
 // fflush       => This function will "flush" the buffer and print immediately the data thats stored to its destination eg. 'printf'
 ```
 
+```
+char *read_input(void) {
+	char *input_line = NULL;
+	size_t buffer_length = 0;
+
+	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
+
+	if (read_command == -1)
+	{
+		free(input_line);
+		return NULL;
+	}
+
+	return input_line;
+	
+}
+
+// *input_line          => pointer to character array (aka string) once passed through 'getline' it will dynamically be allocated
+// buffer_length        => initial size of the buffer used to store 'input_line'. Once passed through 'getline' it will allocate memory as needed.
+// getline              => function with parameters ('input_line' 'buffer_length' 'stdin') which basically reads the line of input from the standard input (stdin)
+// read_command         => if value is positive integer then SUCCESS if negative integer then FAILURE. 0 = SUCCESS -1 = FAILURE.
+// free                 => if FAILURE then free memory to prevent memory leak
+```

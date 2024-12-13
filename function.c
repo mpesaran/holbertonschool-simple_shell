@@ -7,7 +7,21 @@ void print_prompt(void) {
 }
 
 // read the users command input
-// -> read_command()
+char *read_input(void) {
+	char *input_line = NULL;
+	size_t buffer_length = 0;
+
+	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
+
+	if (read_command == -1)
+	{
+		free(input_line);
+		return NULL;
+	}
+
+	return input_line;
+	
+}
 
 // Remove trailing space from input
 // -> remove_trail()
