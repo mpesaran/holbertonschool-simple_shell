@@ -70,17 +70,17 @@ void strtok_process(char *input, char **argv)
 
 	token = strtok(input, " "); /* start tokenizing with space as delimiter */
 	while (token != NULL) 
-	{	/*count = count + 1; */
+	{	/* count = count + 1; */
 		argv[count] = token; /* store token into argv[count] */
-        	/*token = strtok(NULL, " ");  continue tokenizing */
-		printf("Token is %s\n", token); /*debugging */
-		printf("argc[%d] is %s\n", count, argv[count]); /*debugging */
+        	/* token = strtok(NULL, " ");  continue tokenizing */
+		/* printf("Token is %s\n", token); debugging */
+		/* printf("argc[%d] is %s\n", count, argv[count]); debugging */
     		count++;
 		token  = strtok(NULL, " ");
 		/*count++; */
 	}
 	argv[count] = NULL; /* terminate last argument */
-	printf("last count is %d\n", count); /* for debugging */
+	/* printf("last count is %d\n", count);  for debugging */
 	return;	
 } 
 
@@ -96,8 +96,9 @@ void execve_process(char **argv)
 	extern char **environ; /* environmental variable from system */
 	/*int flag; */
 	/*char *envList[] = {"HOME=/root", "PATH=/bin/", NULL }; user defined env */
+	
 	int status;
-	char temp[100];
+	char path_name[100];
 
 	pid_t child_pid;
 
@@ -108,21 +109,22 @@ void execve_process(char **argv)
 		perror("Error in child pid");
 		exit (1);
 	}
-	/*temp = strcat("/bin/",argv[0]);*/
-	sprintf(temp, "../bin/%s", argv[0]);
-	printf("Temp is %s\n", temp); /*debugging */
+	/*temp = strcat("/bin/",argv[0]); causing core dumped error*/
+	sprintf(path_name, "../bin/%s", argv[0]); /* concentate */
+	/*printf("path name is %s\n", path_name); debugging */
 	if (child_pid == 0) /* if 0, child_pid  */
 	{	
 		/*flag = execve(argv[0], argv, environ); */
-		printf("Environ is %s\n", *environ); /*for debugging */
-		printf("argv[0] is %s\n", argv[0]); /* for debugging */
-		printf("argv[1] is %s\n", argv[1]); /* for debugging */
+		/* printf("Environ is %s\n", *environ); for debugging */
+		/* printf("argv[0] is %s\n", argv[0]);  for debugging */
+		/* printf("argv[1] is %s\n", argv[1]);  for debugging */
 		/*flag = execve(argv[0], argv, NULL); */
 		/*if (flag == -1)  issue with execve */
 		
 		/* if (execve(argv[0], argv, NULL) == -1) */
 		/* if (execve(argv[0], argv, envList) == -1) */
-		if (execve(temp, argv, NULL) == -1)
+		/* if (execve(path_name, argv, NULL) == -1) */
+		if (execve(path_name, argv, environ) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
