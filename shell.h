@@ -1,4 +1,4 @@
-#ifdef SHELL_H
+#ifndef SHELL_H
 #define SHELL_H
 
 #include <stdio.h>
@@ -8,7 +8,8 @@
 #include <sys/types.h>
 
 // Function Prototypes
-int command_handler(char *input);
+void print_prompt(void);
+
 
 
 #endif

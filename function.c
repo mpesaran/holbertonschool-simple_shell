@@ -1,7 +1,10 @@
-#include <shell.h>
+#include "shell.h"
 
 // Print shell promt (interactive vs non-interactive
-// -> print_prompt()
+void print_prompt(void) {
+	printf("simple_shell$ ");
+	fflush(stdout);
+}
 
 // read the users command input
 // -> read_command()

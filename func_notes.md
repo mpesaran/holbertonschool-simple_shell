@@ -2,17 +2,16 @@
 
 #### My code with detailed notes of why I have written what i've written. The brute force code i've trialed and errored. 😅
 
-```#include <shell.h>
-
-/*
- * function_name - Does something i'm yet to code
- * @command_name: The command to execute once i've given it a name
- * Return: '0' for success and '-1' for error (failure)
- */
-
-int command_handler (char *input)
-{
-
-        return 0;
-}
 ```
+void print_prompt(void) {
+        if (isatty(STDIN_FILEN0)) {
+         printf("simple_shell$ ");
+         fflush(stdout);
+        }
+}
+
+// isatty       => checks the type of input source (text vs file input)
+// STDIN        => standard INPUT represents the input from the users keyboard whilst running in a terminal. 
+// fflush       => This function will "flush" the buffer and print immediately the data thats stored to its destination eg. 'printf'
+```
+
