@@ -2,8 +2,7 @@
 
 #### My code with detailed notes of why I have written what i've written. The brute force code i've trialed and errored. 😅
 
-```
-#include <stdlib.h>
+```#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -22,10 +21,14 @@ int command_handler (char *input)
         char *args[2];
         /*
          * @PID         -> Store Process ID
-         * @child_status-> Store Child Process Status (Sucess vs Failure)         * @args        -> Argument array for execve (input + NULL terminator to complete the input) (0 = Input, 1 = NULL)
+         * @child_status-> Store Child Process Status (Success vs Failure)         
+         * @args        -> Argument array for execve (input + NULL terminator to complete the input) (0 = Input, 1 = NULL)
          */
 
         input[strcspn(input, "\n")] = 0;
+        // Removes trailing '\n' character from input
+        // Turns it into a NULL '\0' which ends the string input from the user
+
 
         return 0;
 }
