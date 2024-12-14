@@ -57,7 +57,7 @@ void pipe_process(char *s)
 {
 	char *cmd1, *cmd2;
 	/*char **arg1, **arg2; */
-	char *arg1[100],*arg2[100]; 
+	char *arg1[100]; /*,*arg2[100]; */
 	/*int fd[2];*/
 
 	/*printf("ac %d, av[0] is %s\n", ac, av[0]);*/
@@ -72,11 +72,14 @@ void pipe_process(char *s)
 	}
 	printf("Testing\nInput is %s\n", s); /* debugging */
 	cmd1 = strtok(s, "|"); /* first command before |*/
-	cmd2 = strtok(NULL, "|"); /* second command after | */
 	
-	printf("Cmd 1 is %s, Cmd2 is %s\n", cmd1, cmd2);
+	/*cmd2 = strtok(NULL, "|");  second command after | */
+	
+	/*printf("Cmd 1 is %s, Cmd2 is %s\n", cmd1, cmd2);*/
+	printf("Cmd 1 is %s\n", cmd1);
+
 	strtok_process(cmd1, arg1); /* tokenize cmd1 */
-	strtok_process(cmd2, arg2); /* tokenize cmd2 */
+	/*strtok_process(cmd2, arg2); tokenize cmd2 */
 	
 	/*if (pipe(fd) == -1) */
 	/*{ */
@@ -84,12 +87,15 @@ void pipe_process(char *s)
 	/*	exit(1); */
 	/*} */
 	/*evecve_pipe_process(arg1, arg2); */
-	execve_pipe_process(arg1, arg2);
+	/*if (execve_pipe_process(arg1, arg2) == -1) */
+
 	/*if (execve(av[0],av, environ) == -1) */
-                {
-                        perror("Error in execve\n");
-                        exit(1);
-                }
+        /*        { */
+                     /*   perror("Error in execve\n"); */
+                      /*  exit(1); */
+        /*        }  */
+	execve_process(arg1);
+
 
 
 }
