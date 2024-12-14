@@ -6,6 +6,7 @@ char *getline_process(void);
 void strtok_process(char *input, char **argv);
 void execve_process(char **argv);
 void pipe_process(char *s);
+void execve_pipe_process(char **arg1, char **arg2);
 
 int main (void)
 /*int main (int argc, char *argv[], char *env[]) */
@@ -33,21 +34,27 @@ int main (void)
 			strtok_process(input,argv_local);
                         printf("argv_local [0] is %s\n ", argv_local[0]);
 			printf("argv_local [1] is %s\n", argv_local[1]);
-			execve_process(argv_local);
+			/*execve_process(argv_local); */
+			pipe_process(input);
 			exit (1);
 		}
 	}
 	return (0);
 }
 
-
+/**
+ * pipe_process - function to handle piping between two commands
+ *
+ * @s: input string
+ * Return: void
+ */
 
 
 void pipe__process(char *s)
 {
 	char *cmd1, *cmd2;
 	char **arg1, **arg2; 
-	int fd[2];
+	/*int fd[2];*/
 
 	/*printf("ac %d, av[0] is %s\n", ac, av[0]);*/
 	/* printf(" Input is %s\n", s); */
@@ -216,14 +223,20 @@ void execve_process(char **argv)
 void execve_pipe_process(char **arg1, char **arg2)
 {
 	int status;
+	int fd[2]; /* variable for read and write end of pipe */
 	/*char path_name[100];*/
 	
 	pid_t child_pid1, child_pid2;
 
+	if (pipe(fd) == -1) /* create a pipe */
+	{
+		perror("Pipe creation failed\n");
+		exit(1);
+	}
 
 	child_pid1 = fork(); /* create a child process 1*/
 
-	if (child_pid1 < 0)
+	if (child_pid1  == -1)
 	{
 		perror("Error in child pid");
 		exit (1);
@@ -231,9 +244,11 @@ void execve_pipe_process(char **arg1, char **arg2)
         
         /*sprintf(path_name, "../bin/%s", argv[0]);  concentate */
         /*printf("path name is %s\n", path_name); debugging */
-	if (child_pid1 == 0) /* if 0, child_pid  */
+	if (child_pid1 == 0) /* if 0, child_pid1  */
 	{
-                close(fd
+                close(fd[0]); /* close read end of pipe */
+		dup2(fd[1], STDOUT_FILENO); /* write to STDOUT */
+		close(fd[1]); /* close write end of pipe */
 		if (execve(arg1[0], arg1, environ) == -1)
 		{
 			perror("Error in execve\n");
@@ -241,11 +256,24 @@ void execve_pipe_process(char **arg1, char **arg2)
 		}
 		
 	}
-	
-	else /* parent pid is */
+	else
+		wait(&status);
+	child_pid2 = fork(); /* create a child process 2 */
+	if (child_pid2 == 0) /* if 0, child_pid2 */
 	{
-		wait(&status); /* wait for child_pid to finish */
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
+		close(fd[0]);
+		if (execve(arg2[0], arg2, environ) == -1)
+		{
+			perror("Error in execve\n");
+			exit(1);
+		}
 	}
+	else
+		wait(&status); /* wait for child_pid to finish */
+	close(fd[0]);
+	close(fd[1]);
 	return;
 }
 
