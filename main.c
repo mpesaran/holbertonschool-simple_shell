@@ -36,28 +36,64 @@ void trailing_input(char *input_trail) {
 	
 }
 
+// Command handler - executes the users input command in shell
+int command_handler(char *command) {
+	pid_t PID;
+	int status;
+	char *args[2];
+	extern char **environ;
+
+	// Preparation arguments for EXECVE
+	args[0] = command;
+	args[1] = NULL;
+
+	if (!command || strlen(command) == 0)
+	{
+		return 0;
+	}
+
+	PID = fork();
+
+	if (PID < 0)
+	{
+		perror("Failed to fork process");
+		return -1;
+	} else if (PID == 0)
+	{
+		if (execve(command, args, environ) == -1)
+		{
+			fprintf(stderr, "%s: Command not found in PATH\n", command);
+			exit(EXIT_FAILURE);
+		}
+		}
+	return 0;
+}
+
 /**
 * main - Entry point for simple shell
 * Return: Always '0'
 */
 int main(void) {
-	char *line;
+	char *command_line;
 
 	while (1)
 	{
 		print_prompt();
 
-		line = read_input();
+		command_line = read_input();
 
 		// EOF
-		if (line == NULL)
+		if (command_line == NULL)
 		{
 			printf("\n");
 			break;
 		}
 
-		trailing_input(line);
-		
+		trailing_input(command_line);
+
+		command_handler(command_line);
+
+		free(command_line);	
 	}
 	
 	return 0;
