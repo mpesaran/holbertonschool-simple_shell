@@ -5,14 +5,14 @@ extern char **environ; /* environmental variable from system */
 char *getline_process(void);
 void strtok_process(char *input, char **argv);
 void execve_process(char **argv);
-void pipe_process(int ac, char *av[]);
+void pipe_process(char *s);
 
 int main (void)
 /*int main (int argc, char *argv[], char *env[]) */
 /*int main (int argc, char *argv[])*/
 {	
 	char *input; /* input from terminal */
-	char *argv_local[1024]; /* execve arguments */
+	char *argv_local[256]; /* execve arguments */
 	/*int flag; */
 	/*non_interactive_process(argc, argv); */
 
@@ -41,18 +41,40 @@ int main (void)
 }
 
 
-void pipe__process(int ac, char *av[])
+
+
+void pipe__process(char *s)
 {
-	printf("ac %d, av[0] is %s\n", ac, av[0]);
-	printf("Testing\n");
-	if (ac < 1)
+	char *cmd1, *cmd2;
+	char **arg1, **arg2; 
+	int fd[2];
+
+	/*printf("ac %d, av[0] is %s\n", ac, av[0]);*/
+	/* printf(" Input is %s\n", s); */
+	/* printf("Testing\n"); */
+	/*if (ac < 1) */
+	
+	if (s == NULL)
 	{
 		printf("Error\n");
 		exit(1);
 	}
-	else
-	{
-		if (execve(av[0],av, environ) == -1)
+	printf("Testing\nInput is %s\n", s); /* debugging */
+	cmd1 = strtok(s, "|"); /* first command before |*/
+	cmd2 = strtok(NULL. "|"); /* second command after | */
+
+	strtok_process(cmd1, arg1); /* tokenize cmd1 */
+	strtok_process(cmd2. arg2); /* tokenize cmd2 */
+	
+	/*if (pipe(fd) == -1) */
+	/*{ */
+	/*	perror("Pipe creation failed\n"); */
+	/*	exit(1); */
+	/*} */
+	evecve_pipe_process(arg1, arg2);
+	
+	
+	/*if (execve(av[0],av, environ) == -1) */
                 {
                         perror("Error in execve\n");
                         exit(1);
@@ -132,7 +154,7 @@ void strtok_process(char *input, char **argv)
 } 
 
 /**
- * execve - function to create a child pid and execute the command
+ * execve_process - function to create a child pid and execute the command
  *
  * @argv : argument array
  * Return: void
@@ -182,5 +204,51 @@ void execve_process(char **argv)
 		wait(&status); /* wait for child_pid to finish */
 	}
 	return;
-
 }
+
+/**
+ * execve_pipe_process - function to create pipe and execute the command
+ *
+ * @argv : argument array
+ * Return: void
+ */
+
+void execve_pipe_process(char **arg1, char **arg2)
+{
+	int status;
+	/*char path_name[100];*/
+	
+	pid_t child_pid1, child_pid2;
+
+
+	child_pid1 = fork(); /* create a child process 1*/
+
+	if (child_pid1 < 0)
+	{
+		perror("Error in child pid");
+		exit (1);
+	}
+        
+        /*sprintf(path_name, "../bin/%s", argv[0]);  concentate */
+        /*printf("path name is %s\n", path_name); debugging */
+	if (child_pid1 == 0) /* if 0, child_pid  */
+	{
+                close(fd
+		if (execve(arg1[0], arg1, environ) == -1)
+		{
+			perror("Error in execve\n");
+			exit(1);
+		}
+		
+	}
+	
+	else /* parent pid is */
+	{
+		wait(&status); /* wait for child_pid to finish */
+	}
+	return;
+}
+
+
+
+
