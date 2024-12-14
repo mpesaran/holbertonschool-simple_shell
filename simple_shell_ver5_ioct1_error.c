@@ -17,12 +17,11 @@ int main (void)
 	/*int flag; */
 	/*non_interactive_process(argc, argv); */
 	
-	if (isatty(STDIN_FILENO) != 0) 
+	if (isatty(STDIN_FILENO) != 0)
 	{
 		while (1) /* neverending loop for prompt */
 		{	
-		/*if (isatty(STDIN_FILENO) != 0) */
-		
+		/* if (isatty(STDIN_FILENO) != 0) **/
 			printf("($) ");
 			input = getline_process();
 			strtok_process(input,argv_local);	
@@ -42,7 +41,6 @@ int main (void)
 		pipe_process(input);
 		exit (1);
 	}
-	
 	
 	return (0);
 }
@@ -73,8 +71,7 @@ void pipe_process(char *s)
 	printf("Testing\nInput is %s\n", s); /* debugging */
 	cmd1 = strtok(s, "|"); /* first command before |*/
 	cmd2 = strtok(NULL, "|"); /* second command after | */
-	
-	printf("Cmd 1 is %s, Cmd2 is %s\n", cmd1, cmd2);
+
 	strtok_process(cmd1, arg1); /* tokenize cmd1 */
 	strtok_process(cmd2, arg2); /* tokenize cmd2 */
 	
@@ -266,31 +263,28 @@ void execve_pipe_process(char **arg1, char **arg2)
 		wait(&status);
 	}
 	
-	if (arg2[0] != NULL)
+	child_pid2 = fork(); /* create a second child process  */
+	if (child_pid2 == -1)
 	{
-		child_pid2 = fork(); /* create a second child process  */
-		if (child_pid2 == -1)
+		perror("Error in child pid 2\n");
+		exit(1);
+	}
+
+	if (child_pid2 == 0) /* if 0, this is child_pid2 */
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
+		close(fd[0]);
+		/* if (execve("../bin/", arg2, environ) == -1) */
+		if (execve(arg2[0], arg2, environ) == -1)
 		{
-			perror("Error in child pid 2\n");
+			perror("Error in execve (child 2)\n");
 			exit(1);
 		}
-
-		if (child_pid2 == 0) /* if 0, this is child_pid2 */
-		{
-			close(fd[1]);
-			dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
-			close(fd[0]);
-			/* if (execve("../bin/", arg2, environ) == -1) */
-			if (execve(arg2[0], arg2, environ) == -1)
-			{
-				perror("Error in execve (child 2)\n");
-				exit(1);
-			}
-		}
-		else
-		{
-			wait(&status); /* wait for child_pid to finish */
-		}
+	}
+	else
+	{
+		wait(&status); /* wait for child_pid to finish */
 	}
 	close(fd[0]);
 	close(fd[1]);
