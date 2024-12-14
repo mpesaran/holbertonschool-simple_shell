@@ -27,7 +27,7 @@ int main (void)
 		}
 		else
 		{	
-			printf(" hsh ");
+			printf("hsh ");
 			input = getline_process();
 			printf("Pipe detected\n"); /*debugging */
 			printf("input piple is %s\n", input); /* debuggiong */
@@ -246,7 +246,8 @@ void execve_pipe_process(char **arg1, char **arg2)
                 close(fd[0]); /* close read end of pipe */
 		dup2(fd[1], STDOUT_FILENO); /* write to STDOUT */
 		close(fd[1]); /* close write end of pipe */
-		if (execve(arg1[0], arg1, environ) == -1)
+		/* if (execve(arg1[0], arg1, environ) == -1) */
+		if (execve("../bin/", arg1, environ) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
@@ -261,7 +262,7 @@ void execve_pipe_process(char **arg1, char **arg2)
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
 		close(fd[0]);
-		if (execve(arg2[0], arg2, environ) == -1)
+		if (execve("../bin/", arg2, environ) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
