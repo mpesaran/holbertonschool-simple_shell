@@ -25,8 +25,16 @@ int main (void)
 			execve_process(argv_local);
 		}
 		else
-		{
-			exit(1);
+		{	
+			printf(" hsh ");
+			input = getline_process();
+			printf("Pipe detected\n"); /*debugging */
+			printf("input piple is %s\n", input); /* debuggiong */
+			strtok_process(input,argv_local);
+                        printf("argv_local [0] is %s\n ", argv_local[0]);
+			printf("argv_local [1] is %s\n", argv_local[1]);
+			execve_process(argv_local);
+			exit (1);
 		}
 	}
 	return (0);
