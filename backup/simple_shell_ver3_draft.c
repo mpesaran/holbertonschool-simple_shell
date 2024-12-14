@@ -5,7 +5,7 @@ extern char **environ; /* environmental variable from system */
 char *getline_process(void);
 void strtok_process(char *input, char **argv);
 void execve_process(char **argv);
-void pipe_process(int ac, char *av[]);
+void non_interactive_process(int ac, char *av[]);
 
 int main (void)
 /*int main (int argc, char *argv[], char *env[]) */
@@ -41,7 +41,7 @@ int main (void)
 }
 
 
-void pipe__process(int ac, char *av[])
+void non_interactive_process(int ac, char *av[])
 {
 	printf("ac %d, av[0] is %s\n", ac, av[0]);
 	printf("Testing\n");
