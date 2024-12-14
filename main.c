@@ -27,6 +27,15 @@ char *read_input(void) {
 	
 }
 
+// Input cleanup (Removes trailing space)
+void trailing_input(char *input_trail) {
+	if (input_trail)
+	{
+		input_trail[strcspn(input_trail, "\n")] = 0;
+	}
+	
+}
+
 /**
 * main - Entry point for simple shell
 * Return: Always '0'
@@ -39,13 +48,18 @@ int main(void) {
 		print_prompt();
 
 		line = read_input();
+
+		// EOF
 		if (line == NULL)
 		{
 			printf("\n");
 			break;
 		}
+
+		trailing_input(line);
 		
 	}
 	
 	return 0;
 }
+ 

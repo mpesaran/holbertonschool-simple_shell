@@ -24,7 +24,8 @@ char *read_input(void) {
 
 	if (read_command == -1)
 	{
-		free(input_line);
+		// EOF => End of file input
+                free(input_line);
 		return NULL;
 	}
 
@@ -35,6 +36,21 @@ char *read_input(void) {
 // *input_line          => pointer to character array (aka string) once passed through 'getline' it will dynamically be allocated
 // buffer_length        => initial size of the buffer used to store 'input_line'. Once passed through 'getline' it will allocate memory as needed.
 // getline              => function with parameters ('input_line' 'buffer_length' 'stdin') which basically reads the line of input from the standard input (stdin)
-// read_command         => if value is positive integer then SUCCESS if negative integer then FAILURE. 0 = SUCCESS -1 = FAILURE.
+// read_command         => if value is positive integer then SUCCESS if negative integer then FAILURE. [0 = SUCCESS] [-1 = FAILURE]
 // free                 => if FAILURE then free memory to prevent memory leak
+```
+
+
+```
+void trailing_input(char *input_trail) {
+        if(input_trail) {
+           input_trail[strcspn(input_trail, "\n")] = 0;
+        }
+
+}
+
+// *input_trail                          => is the array of characters (the string aka the command the user inputs into shell)
+// strcspn(input, "\n")                 => calculates (locates in the array) where the "\n" is located
+// input[strcspn(input, "\n")] = 0;     => replaces the "\n" with '\0' (= 0), which marks the end of the input
+
 ```
