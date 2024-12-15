@@ -6,7 +6,7 @@ char *getline_process(void);
 void strtok_process(char *input, char **argv);
 void execve_process(char **argv);
 void pipe_process(char *s);
-void execve_pipe_process(char **arg1, char **arg2);
+void execve_pipe_process(char **argv);
 
 int main (void)
 /*int main (int argc, char *argv[], char *env[]) */
@@ -85,14 +85,15 @@ void pipe_process(char *s)
 	/*} */
 	/*evecve_pipe_process(arg1, arg2); */
 	/*execve_pipe_process(arg1, arg2); */
+	execve_pipe_process(arg1);
 	/*if (execve(arg1[0], arg1, environ) == -1)*/
-	if (execvp(arg1[0], arg1) == -1)
+	/*if (execvp(arg1[0], arg1) == -1) */
 		/*if (execve(av[0],av, environ) == -1) */
-                {
-                        perror("Error in execve\n");
-                        exit(1);
-                }
-
+               /* { */
+                /*        perror("Error in execve\n"); */
+                /*        exit(1); */
+              /*  } */
+	return; 
 
 }
 
@@ -226,13 +227,15 @@ void execve_process(char **argv)
  * Return: void
  */
 
-void execve_pipe_process(char **arg1, char **arg2)
+void execve_pipe_process(char **argv)
 {
 	int status;
 	int fd[2]; /* variable for read and write end of pipe */
-	/*char path_name[100];*/
+	char path_name[20];
+	char buffer[1024];
+	size_t bytesRead;
 	
-	pid_t child_pid1, child_pid2;
+	pid_t child_pid;
 
 	if (pipe(fd) == -1) /* create a pipe */
 	{
@@ -240,59 +243,59 @@ void execve_pipe_process(char **arg1, char **arg2)
 		exit(1);
 	}
 
-	child_pid1 = fork(); /* create a child process 1*/
+	child_pid = fork(); /* create a child process */
 
-	if (child_pid1  == -1)
+	if (child_pid  == -1)
 	{
 		perror("Error in child pid 1\n");
 		exit (1);
 	}
         
-        /*sprintf(path_name, "../bin/%s", argv[0]);  concentate */
+        sprintf(path_name, "/bin/%s", argv[0]);  /*concentate */
         /*printf("path name is %s\n", path_name); debugging */
-	if (child_pid1 == 0) /* if 0, this is child  */
+	if (child_pid == 0) /* if 0, this is child  */
 	{
-                close(fd[0]); /* close read end of pipe */
+                close(fd[0]); /* close read  end of pipe */
 		dup2(fd[1], STDOUT_FILENO); /* redirect STDOUT to pipe write end */
 		close(fd[1]); /* close write end of after dup2 */
-		if (execve(arg1[0], arg1, environ) == -1)
-		/*if (execve("../bin/", arg1, environ) == -1) */
+		
+		/*if (execve(arg1[0], arg1, environ) == -1)*/
+		if (execve(path_name, argv, environ) == -1) 
 		{
-			perror("Error in execve ( child 1)\n");
+			perror("Error in execve ( child )\n");
 			exit(1);
 		}
 		
 	}
-	else
-	{
-		wait(&status);
-	}
-	
-	child_pid2 = fork(); /* create a second child process  */
-	if (child_pid2 == -1)
-	{
-		perror("Error in child pid 2\n");
-		exit(1);
-	}
-
-	if (child_pid2 == 0) /* if 0, this is child_pid2 */
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
-		close(fd[0]);
-		/* if (execve("../bin/", arg2, environ) == -1) */
-		if (execve(arg2[0], arg2, environ) == -1)
+	else /* parent */
+	{	
+		close(fd[1]); /* close write end of pipe */
+		
+		bytesRead = read (fd[0], buffer, sizeof(buffer)); /* read from fd[0] into buffer */
+		while (bytesRead  > 0) 	
 		{
-			perror("Error in execve (child 2)\n");
-			exit(1);
+			write(STDOUT_FILENO, buffer, bytesRead); /* write to stdout */
+			bytesRead = read(fd[0], buffer, sizeof(buffer)); /* read next info/line from fd[0] pipe */
 		}
+		close(fd[0]); /* close read end of the pipe */ 
+		wait(&status); /* wait for child to finish */
 	}
-	else
-	{
-		wait(&status); /* wait for child_pid to finish */
-	}
-	close(fd[0]);
-	close(fd[1]);
+		/*close(fd[1]); */
+		/* dup2(fd[0], STDIN_FILENO); /* read from STDIN - only first sentence */
+		/*close(fd[0]); */
+		/* if (execve("../bin/", arg2, environ) == -1) */
+		/*if (execve(arg2[0], arg2, environ) == -1) */
+		/*{ */
+		/*	perror("Error in execve (child 2)\n"); */
+		/*	exit(1); */
+		/*} */
+	/* } */
+	/*else */
+	/*{ */
+		/*wait(&status);  wait for child_pid to finish */
+	/*} */
+	/*close(fd[0]); */
+	/*close(fd[1]); */
 	return;
 }
 
