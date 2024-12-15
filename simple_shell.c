@@ -17,32 +17,33 @@ int main (void)
 	/*int flag; */
 	/*non_interactive_process(argc, argv); */
 	
-	if (isatty(STDIN_FILENO) != 0)
-	{
-		while (1) /* neverending loop for prompt */
-		{	
+	while (1)
+	{	
+		if (isatty(STDIN_FILENO) != 0)
+		{
+		/*while (1)  neverending loop for prompt */
+		/*{ */	
 		/* if (isatty(STDIN_FILENO) != 0) **/
 			printf("($) ");
 			input = getline_process();
 			strtok_process(input,argv_local);	
 			execve_process(argv_local);
 		}
+	/*}*/
+		else
+		{	
+			printf("hsh ");
+			input = getline_process();
+			/*printf("Pipe detected\n"); debugging */
+			/* printf("input piple is %s\n", input);  debuggiong */
+			/*strtok_process(input,argv_local);*/
+                	/* printf("argv_local [0] is %s\n ", argv_local[0]); debugging */
+			/* printf("argv_local [1] is %s\n", argv_local[1]); debugging */
+			/*execve_process(argv_local); */
+			pipe_process(input);
+			/* exit (1); */
+		}
 	}
-	else
-	{	
-		/*printf("hsh\t"); */
-		input = getline_process();
-		printf("hsh\n ");
-		/*printf("Pipe detected\n"); debugging */
-		/* printf("input piple is %s\n", input);  debuggiong */
-		/*strtok_process(input,argv_local);*/
-                /* printf("argv_local [0] is %s\n ", argv_local[0]); debugging */
-		/* printf("argv_local [1] is %s\n", argv_local[1]); debugging */
-		/*execve_process(argv_local); */
-		pipe_process(input);
-		exit (1);
-	}
-	
 	return (0);
 }
 
@@ -69,9 +70,10 @@ void pipe_process(char *s)
 		printf("Error\n");
 		exit(1);
 	}
-	/*printf("Testing\nInput is %s\n", s);  debugging */
+	printf("Testing\nInput is %s\n", s); /* debugging */
 	cmd1 = strtok(s, "|"); /* first command before |*/
 	/*cmd2 = strtok(NULL, "|");  second command after | */
+
 	strtok_process(cmd1, arg1); /* tokenize cmd1 */
 	/*strtok_process(cmd2, arg2);  tokenize cmd2 */
 	/* printf("cmd 1 is %s\n", cmd1); debugging */
@@ -83,9 +85,9 @@ void pipe_process(char *s)
 	/*} */
 	/*evecve_pipe_process(arg1, arg2); */
 	/*execve_pipe_process(arg1, arg2); */
-
-	if (execve(arg1[0], arg1, environ) == -1)
-	/*if (execve(av[0],av, environ) == -1) */
+	/*if (execve(arg1[0], arg1, environ) == -1)*/
+	if (execvp(arg1[0], arg1) == -1)
+		/*if (execve(av[0],av, environ) == -1) */
                 {
                         perror("Error in execve\n");
                         exit(1);

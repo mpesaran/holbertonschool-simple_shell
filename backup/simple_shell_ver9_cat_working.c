@@ -32,11 +32,11 @@ int main (void)
 	{	
 		printf("hsh ");
 		input = getline_process();
-		printf("Pipe detected\n"); /*debugging */
-		printf("input piple is %s\n", input); /* debuggiong */
-		strtok_process(input,argv_local);
-                printf("argv_local [0] is %s\n ", argv_local[0]);
-		printf("argv_local [1] is %s\n", argv_local[1]);
+		/*printf("Pipe detected\n"); debugging */
+		/* printf("input piple is %s\n", input);  debuggiong */
+		/*strtok_process(input,argv_local);*/
+                /* printf("argv_local [0] is %s\n ", argv_local[0]); debugging */
+		/* printf("argv_local [1] is %s\n", argv_local[1]); debugging */
 		/*execve_process(argv_local); */
 		pipe_process(input);
 		exit (1);
@@ -53,9 +53,9 @@ int main (void)
  */
 void pipe_process(char *s)
 {
-	char *cmd1, *cmd2;
+	char *cmd1; /*, *cmd2;*/
 	/*char **arg1, **arg2; */
-	char *arg1[100],*arg2[100]; 
+	char *arg1[100]; /*,*arg2[100]; */
 	/*int fd[2];*/
 
 	/*printf("ac %d, av[0] is %s\n", ac, av[0]);*/
@@ -68,29 +68,28 @@ void pipe_process(char *s)
 		printf("Error\n");
 		exit(1);
 	}
-	arg1[0] = NULL;
-	arg2[0] = NULL;
 	printf("Testing\nInput is %s\n", s); /* debugging */
 	cmd1 = strtok(s, "|"); /* first command before |*/
-	cmd2 = strtok(NULL, "|"); /* second command after | */
+	/*cmd2 = strtok(NULL, "|");  second command after | */
 
 	strtok_process(cmd1, arg1); /* tokenize cmd1 */
-	if (cmd2 != NULL)
-	{
-		strtok_process(cmd2, arg2); /* tokenize cmd2 */
-	}
+	/*strtok_process(cmd2, arg2);  tokenize cmd2 */
+	/* printf("cmd 1 is %s\n", cmd1); debugging */
+
 	/*if (pipe(fd) == -1) */
 	/*{ */
 	/*	perror("Pipe creation failed\n"); */
 	/*	exit(1); */
 	/*} */
 	/*evecve_pipe_process(arg1, arg2); */
-	execve_pipe_process(arg1, arg2);
-	/*if (execve(av[0],av, environ) == -1) */
-                /*{ */ 
-                      /*  perror("Error in execve\n"); */
-                      /*  exit(1); */
-              /*  } */
+	/*execve_pipe_process(arg1, arg2); */
+	/*if (execve(arg1[0], arg1, environ) == -1)*/
+	if (execvp(arg1[0], arg1) == -1)
+		/*if (execve(av[0],av, environ) == -1) */
+                {
+                        perror("Error in execve\n");
+                        exit(1);
+                }
 
 
 }
@@ -205,9 +204,7 @@ void execve_process(char **argv)
 		/* if (execve(argv[0], argv, NULL) == -1) */
 		/* if (execve(argv[0], argv, envList) == -1) */
 		/* if (execve(path_name, argv, NULL) == -1) */
-		
-		/*if (execve(path_name, argv, environ) == -1) */
-		if (execvp(argv[0], argv) == -1)
+		if (execve(path_name, argv, environ) == -1)
 		{
 			perror("Error in execve\n");
 			exit(1);
@@ -253,23 +250,21 @@ void execve_pipe_process(char **arg1, char **arg2)
         /*printf("path name is %s\n", path_name); debugging */
 	if (child_pid1 == 0) /* if 0, this is child  */
 	{
-                /*close(fd[0]);  close read end of pipe */
+                close(fd[0]); /* close read end of pipe */
 		dup2(fd[1], STDOUT_FILENO); /* redirect STDOUT to pipe write end */
 		close(fd[1]); /* close write end of after dup2 */
-		close(fd[0]);
-		/*if (execve(arg1[0], arg1, environ) == -1) */
-		if (execvp(arg1[0], arg1) == -1)
-			/*if (execve("../bin/", arg1, environ) == -1) */
+		if (execve(arg1[0], arg1, environ) == -1)
+		/*if (execve("../bin/", arg1, environ) == -1) */
 		{
 			perror("Error in execve ( child 1)\n");
 			exit(1);
 		}
 		
 	}
-	/* else *
-	/* {*/
-	/*	wait(&status); */
-	/*} */
+	else
+	{
+		wait(&status);
+	}
 	
 	child_pid2 = fork(); /* create a second child process  */
 	if (child_pid2 == -1)
@@ -279,14 +274,12 @@ void execve_pipe_process(char **arg1, char **arg2)
 	}
 
 	if (child_pid2 == 0) /* if 0, this is child_pid2 */
-	{ 
-		/*close(fd[1]); */
+	{
+		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO); /* Read from STDIN */
 		close(fd[0]);
-		close(fd[1]);
 		/* if (execve("../bin/", arg2, environ) == -1) */
-		/*if (execve(arg2[0], arg2, environ) == -1) */
-		if (execvp(arg2[0], arg2) == -1)
+		if (execve(arg2[0], arg2, environ) == -1)
 		{
 			perror("Error in execve (child 2)\n");
 			exit(1);
@@ -294,12 +287,10 @@ void execve_pipe_process(char **arg1, char **arg2)
 	}
 	else
 	{
-		/*wait(&status); wait for child_pid to finish */
-		/*while (wait(&status) != child_pid1); */
-		close(fd[0]);
-		close(fd[1]);
-		while (wait(&status) != child_pid1);
+		wait(&status); /* wait for child_pid to finish */
 	}
+	close(fd[0]);
+	close(fd[1]);
 	return;
 }
 
