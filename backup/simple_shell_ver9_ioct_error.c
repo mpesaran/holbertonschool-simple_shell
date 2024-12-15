@@ -68,13 +68,17 @@ void pipe_process(char *s)
 		printf("Error\n");
 		exit(1);
 	}
+	arg1[0] = NULL;
+	arg2[0] = NULL;
 	printf("Testing\nInput is %s\n", s); /* debugging */
 	cmd1 = strtok(s, "|"); /* first command before |*/
 	cmd2 = strtok(NULL, "|"); /* second command after | */
 
 	strtok_process(cmd1, arg1); /* tokenize cmd1 */
-	strtok_process(cmd2, arg2); /* tokenize cmd2 */
-	
+	if (cmd2 != NULL)
+	{
+		strtok_process(cmd2, arg2); /* tokenize cmd2 */
+	}
 	/*if (pipe(fd) == -1) */
 	/*{ */
 	/*	perror("Pipe creation failed\n"); */
