@@ -55,7 +55,7 @@ void pipe_process(char *s)
 {
 	char *cmd1; /*, *cmd2;*/
 	/*char **arg1, **arg2; */
-	char *arg1[100]; /*,*arg2[100]; 
+	char *arg1[100]; /*,*arg2[100]; */
 	/*int fd[2];*/
 
 	/*printf("ac %d, av[0] is %s\n", ac, av[0]);*/
