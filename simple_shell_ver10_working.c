@@ -17,20 +17,20 @@ int main (void)
 	/*int flag; */
 	/*non_interactive_process(argc, argv); */
 	
-	/* while (1) */
-	/*{ */	
-	if (isatty(STDIN_FILENO) != 0)
-	{
-		while (1) /* neverending loop for prompt */
-		{ 	
+	while (1)
+	{	
+		if (isatty(STDIN_FILENO) != 0)
+		{
+		/*while (1)  neverending loop for prompt */
+		/*{ */	
 		/* if (isatty(STDIN_FILENO) != 0) **/
 			printf("($) ");
 			input = getline_process();
 			strtok_process(input,argv_local);	
 			execve_process(argv_local);
 		}
-	}
-	else
+	/*}*/
+		else
 		{	
 			printf("hsh ");
 			input = getline_process();
@@ -43,7 +43,7 @@ int main (void)
 			pipe_process(input);
 			/* exit (1); */
 		}
-	/* } */
+	}
 	return (0);
 }
 
