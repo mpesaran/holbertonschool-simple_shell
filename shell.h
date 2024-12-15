@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+// Global Variables
+extern char **environ;
+
 // Function Prototypes
 void print_prompt(void);
 char *read_input(void);

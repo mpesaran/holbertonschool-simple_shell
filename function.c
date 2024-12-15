@@ -1,7 +1,7 @@
 #include "shell.h"
 
-// Print shell prompt (interactive bs non-interactive)
-void print_prompt(void) 
+/* Print shell prompt (interactive bs non-interactive) */
+void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
@@ -10,8 +10,8 @@ void print_prompt(void)
 	}
 }
 
-// Read the users command input
-char *read_input(void) 
+/* Read the users command input */
+char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
@@ -21,14 +21,14 @@ char *read_input(void)
 	if (read_command == -1)
 	{
 		free(input_line);
-		return NULL;
+		return (NULL);
 	}
 
-	return input_line;
+	return (input_line);
 }
 
-// Input cleanup (Removes trailing space)
-void trailing_input(char *input_trail) 
+/* Input cleanup (Removes trailing space) */
+void trailing_input(char *input_trail)
 {
 	if (input_trail)
 	{
@@ -36,21 +36,20 @@ void trailing_input(char *input_trail)
 	}
 }
 
-// Command handler - executes the users input command in shell
-int command_handler(char *command) 
+/* Command handler - executes the users input command in shell */
+int command_handler(char *command)
 {
 	pid_t PID;
 	int status;
 	char *args[2];
-	extern char **environ;
 
-	// Preparation arguments for EXECVE
+	/* Preparation arguments for EXECVE */
 	args[0] = command;
 	args[1] = NULL;
 
 	if (!command || strlen(command) == 0)
 	{
-		return 0;
+		return (0);
 	}
 
 	PID = fork();
@@ -58,7 +57,7 @@ int command_handler(char *command)
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
-		return -1;
+		return (-1);
 	}
 	else if (PID == 0)
 	{
@@ -70,11 +69,9 @@ int command_handler(char *command)
 	}
 		else
 		{
-			do
-			{
+			do {
 				waitpid(PID, &status, WUNTRACED);
 			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 		}
-		
-	return 0;
+	return (0);
 }
