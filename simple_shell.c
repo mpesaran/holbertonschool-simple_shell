@@ -192,7 +192,7 @@ void execve_process(char **argv)
 		exit (1);
 	}
 	/*temp = strcat("/bin/",argv[0]); causing core dumped error*/
-	sprintf(path_name, "../bin/%s", argv[0]); /* concentate */
+	sprintf(path_name, "/bin/%s", argv[0]); /* concentate */
 	/*printf("path name is %s\n", path_name); debugging */
 	if (child_pid == 0) /* if 0, child_pid  */
 	{	
