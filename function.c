@@ -5,7 +5,7 @@ void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
-		printf("simple_shell$ ");
+		printf("simple_shell$");
 		fflush(stdout);
 	}
 }
@@ -32,7 +32,7 @@ void trailing_input(char *input_trail)
 {
 	if (input_trail)
 	{
-		input_trail[strcspn(input_trail, "\n")] = 0;
+		input_trail[strcspn(input_trail, "\n")] = '\0';
 	}
 }
 
