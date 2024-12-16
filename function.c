@@ -5,7 +5,8 @@ void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
-		write(STDOUT_FILENO, "simple_shell$ ", 14);
+		printf("simple_shell$");
+		fflush(stdout);
 	}
 }
 
@@ -14,17 +15,32 @@ char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
-	ssize_t read_command; 
-	
-	read_command = getline(&input_line, &buffer_length, stdin);
+
+	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
 
 	if (read_command == -1)
 	{
-		if (input_line)
+		
+		if (feof(stdin)) /* end of file */
+		{
 			free(input_line);
+			printf("End of file /Ctrl D detected.. Exiting\n");
+			exit (1);
+		}
+		else
+		{	
+			perror("Error in getline\n");	
+		}
+			
+		free(input_line);
 		return (NULL);
 	}
+	if (strcmp(input_line, "exit\n") == 0)
+	{
+		printf("Exiting\n");
+		exit(1);
 
+	}
 	return (input_line);
 }
 
@@ -43,21 +59,32 @@ int command_handler(char *command)
 	pid_t PID;
 	int status;
 	char *args[2];
-	char *envp[] = {NULL};
+	
+	char *token;
+	int count = 0;
 
+	/* Preparation arguments for EXECVE */
+	/*args[0] = command; */
+	/*args[1] = NULL; */
+
+	/*args[100];*/
+	
+	/* Tokenize */
+	token = strtok(command, " ");
+	while (token != NULL) 
+	{
+		args[count++] = token;   
+		token = strtok(NULL, " ");
+	}
+	args[count] = NULL;
 
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
 
-	if (access(command, X_OK) != 0)
-	{
-		fprintf(stderr, "%s: Command not found\n", command);
-		return(-1);
-	}
-	
 	PID = fork();
+
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
@@ -65,21 +92,19 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		/* Preparation arguments for EXECVE */
-		args[0] = command;
-		args[1] = NULL;
-	
-	if (execve(command, args, envp)== -1)
-			{	
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
+		if (execvp(command, args) == -1)
+		/*if (execve(args[0], args, environ) == -1)*/
+		{
+			fprintf(stderr, "%s: %s Command not found in PATH\n", command, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
-	{
-		do {
-			waitpid(PID, &status, WUNTRACED);
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
-	return WEXITSTATUS(status);
+		{
+			do { 
+				waitpid(PID, &status, WUNTRACED);
+			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+			/*wait(NULL);*/
+		}
+	return (0);
 }
