@@ -14,11 +14,14 @@ char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
-	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
+	ssize_t read_command; 
+	
+	read_command = getline(&input_line, &buffer_length, stdin);
 
 	if (read_command == -1)
 	{
-		free(input_line);
+		if (input_line)
+			free(input_line);
 		return (NULL);
 	}
 
@@ -51,6 +54,7 @@ int command_handler(char *command)
 	if (access(command, X_OK) != 0)
 	{
 		fprintf(stderr, "%s: Command not found\n", command);
+		return(-1);
 	}
 	
 	PID = fork();
@@ -77,5 +81,5 @@ int command_handler(char *command)
 			waitpid(PID, &status, WUNTRACED);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
-	return (0);
+	return WEXITSTATUS(status);
 }
