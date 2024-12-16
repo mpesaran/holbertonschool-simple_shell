@@ -5,8 +5,7 @@ void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
-		printf("simple_shell$");
-		fflush(stdout);
+		write(STDOUT_FILENO, "simple_shell$ ", 14);
 	}
 }
 
@@ -15,12 +14,14 @@ char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
-
-	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
+	ssize_t read_command; 
+	
+	read_command = getline(&input_line, &buffer_length, stdin);
 
 	if (read_command == -1)
 	{
-		free(input_line);
+		if (input_line)
+			free(input_line);
 		return (NULL);
 	}
 
@@ -42,18 +43,21 @@ int command_handler(char *command)
 	pid_t PID;
 	int status;
 	char *args[2];
+	char *envp[] = {NULL};
 
-	/* Preparation arguments for EXECVE */
-	args[0] = command;
-	args[1] = NULL;
 
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
 
+	if (access(command, X_OK) != 0)
+	{
+		fprintf(stderr, "%s: Command not found\n", command);
+		return(-1);
+	}
+	
 	PID = fork();
-
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
@@ -61,17 +65,21 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		if (execvp(command, args) == -1)
-		{
-			fprintf(stderr, "%s: %s Command not found in PATH\n", command, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
+		/* Preparation arguments for EXECVE */
+		args[0] = command;
+		args[1] = NULL;
+	
+	if (execve(command, args, envp)== -1)
+			{	
+				perror("execve");
+				exit(EXIT_FAILURE);
+			}
 	}
-		else
-		{
-			do {
-				waitpid(PID, &status, WUNTRACED);
-			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-		}
-	return (0);
+	else
+	{
+		do {
+			waitpid(PID, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
+	return WEXITSTATUS(status);
 }

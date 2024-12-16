@@ -6,24 +6,27 @@
 */
 int main(void) {
 	char *command_line;
+	int status;
 
 	while (1)
 	{
-		print_prompt();
-
+		if (isatty(STDIN_FILENO))
+			print_prompt();
+		
 		command_line = read_input();
 
 		/* EOF */
 		if (command_line == NULL)
 		{
-			printf("\n");
+			if	(isatty(STDIN_FILENO))
+				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
 
 		trailing_input(command_line);
 
 		if (strlen(command_line) > 0)
-			command_handler(command_line);
+			status = command_handler(command_line);
 		
 		free(command_line);	
 	}
