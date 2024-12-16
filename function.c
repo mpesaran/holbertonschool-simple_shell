@@ -48,8 +48,12 @@ int command_handler(char *command)
 		return (0);
 	}
 
+	if (access(command, X_OK) != 0)
+	{
+		fprintf(stderr, "%s: Command not found\n", command);
+	}
+	
 	PID = fork();
-
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
@@ -60,25 +64,18 @@ int command_handler(char *command)
 		/* Preparation arguments for EXECVE */
 		args[0] = command;
 		args[1] = NULL;
-
-		if (access(command, X_OK) == 0)\
-		{
-			if (execve(command, args, envp)== -1)
+	
+	if (execve(command, args, envp)== -1)
 			{	
-				fprintf(stderr, "%s: %s Command not found with EXECVE CMD\n", command, strerror(errno));
+				perror("execve");
 				exit(EXIT_FAILURE);
 			}
-		}
-		else
-		{
-			fprintf(stderr, "%s: Command not found\n", command);
-		}
 	}
 	else
 	{
 		do {
 			waitpid(PID, &status, WUNTRACED);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-		}
+	}
 	return (0);
 }
