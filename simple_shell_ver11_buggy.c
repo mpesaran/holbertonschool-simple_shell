@@ -17,21 +17,20 @@ int main (void)
 	/*int flag; */
 	/*non_interactive_process(argc, argv); */
 	
-	while (1)
-	{	
-		if (isatty(STDIN_FILENO) != 0)
-		{
-		/*while (1)  neverending loop for prompt */
-		/*{ */	
+	/* while (1) */
+	/*{ */	
+	if (isatty(STDIN_FILENO) != 0)
+	{
+		while (1) /* neverending loop for prompt */
+		{ 	
 		/* if (isatty(STDIN_FILENO) != 0) **/
 			printf("($) ");
 			input = getline_process();
 			strtok_process(input,argv_local);	
 			execve_process(argv_local);
-			free(input);
 		}
-	/*}*/
-		else
+	}
+	else
 		{	
 			printf("hsh ");
 			input = getline_process();
@@ -42,11 +41,9 @@ int main (void)
 			/* printf("argv_local [1] is %s\n", argv_local[1]); debugging */
 			/*execve_process(argv_local); */
 			pipe_process(input);
-			/*free(input);  will cause stack overflow*/ 
 			/* exit (1); */
 		}
-	}
-	free(input);
+	/* } */
 	return (0);
 }
 
@@ -96,7 +93,6 @@ void pipe_process(char *s)
                 /*        perror("Error in execve\n"); */
                 /*        exit(1); */
               /*  } */
-	free(cmd1);
 	return; 
 
 }
@@ -110,8 +106,7 @@ void pipe_process(char *s)
 
 char *getline_process(void)
 {
-	char *buffer = NULL; 
-	/*char buffer[100]; */
+	char *buffer = NULL;
 	int nread;
 	size_t length = 0;
 
@@ -120,13 +115,11 @@ char *getline_process(void)
 	{
 		if (feof(stdin)) /* end of file */
 		{
-			free(buffer);
 			printf("End of file /Ctrl D detected.. Exiting\n");
 			exit (1);
 		}
 		else
-		{	
-			free(buffer);
+		{
 			perror("Error in getline\n");
 			/*exit (1);*/
 			/*continue;*/
@@ -138,7 +131,6 @@ char *getline_process(void)
 	}
 	if (strcmp(buffer, "exit") == 0)
 	{
-		free(buffer);
 		printf("Exiting\n");
 		exit (1);
 
@@ -172,7 +164,6 @@ void strtok_process(char *input, char **argv)
 	}
 	argv[count] = NULL; /* terminate last argument */
 	/* printf("last count is %d\n", count);  for debugging */
-	free(token);
 	return;	
 } 
 
@@ -226,7 +217,6 @@ void execve_process(char **argv)
 	{
 		wait(&status); /* wait for child_pid to finish */
 	}
-	close(child_pid);
 	return;
 }
 
@@ -243,7 +233,6 @@ void execve_pipe_process(char **argv)
 	int fd[2]; /* variable for read and write end of pipe */
 	char path_name[20];
 	char buffer[1024];
-	/*char *buffer;*/
 	size_t bytesRead;
 	
 	pid_t child_pid;
@@ -264,8 +253,6 @@ void execve_pipe_process(char **argv)
         
         sprintf(path_name, "/bin/%s", argv[0]);  /*concentate */
         /*printf("path name is %s\n", path_name); debugging */
-	/*path_name = *argv[0]; */
-	printf("pathname : %s\n", argv[0]);
 	if (child_pid == 0) /* if 0, this is child  */
 	{
                 close(fd[0]); /* close read  end of pipe */
@@ -273,8 +260,7 @@ void execve_pipe_process(char **argv)
 		close(fd[1]); /* close write end of after dup2 */
 		
 		/*if (execve(arg1[0], arg1, environ) == -1)*/
-		/**if (execve(" ", argv, environ) == -1) **/
-		if (execve(path_name, argv, environ) == -1)
+		if (execve(path_name, argv, environ) == -1) 
 		{
 			perror("Error in execve ( child )\n");
 			exit(1);
@@ -310,7 +296,6 @@ void execve_pipe_process(char **argv)
 	/*} */
 	/*close(fd[0]); */
 	/*close(fd[1]); */
-	/*free(buffer);*/
 	return;
 }
 
