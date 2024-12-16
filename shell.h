@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-// Global Variables
+/* Global Variables */
 extern char **environ;
 
-// Function Prototypes
+/* Function Prototypes */
 void print_prompt(void);
 char *read_input(void);
 void trailing_input(char *input_trail);
