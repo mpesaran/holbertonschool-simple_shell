@@ -63,7 +63,7 @@ int command_handler(char *command)
 	{
 		if (execvp(command, args) == -1)
 		{
-			fprintf(stderr, "%s: Command not found in PATH\n", command, strerror(errno_t));
+			fprintf(stderr, "%s: %s Command not found in PATH\n", command, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 	}
