@@ -15,7 +15,6 @@ char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
-
 	ssize_t read_command = getline(&input_line, &buffer_length, stdin);
 
 	if (read_command == -1)
@@ -42,10 +41,8 @@ int command_handler(char *command)
 	pid_t PID;
 	int status;
 	char *args[2];
+	char *envp[] = {NULL};
 
-	/* Preparation arguments for EXECVE */
-	args[0] = command;
-	args[1] = NULL;
 
 	if (!command || strlen(command) == 0)
 	{
@@ -61,17 +58,28 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		if (execvp(command, args) == -1)
+		/* Preparation arguments for EXECVE */
+		args[0] = command;
+		args[1] = NULL;
+
+		if (access(command, X_OK) == 0)\
 		{
-			fprintf(stderr, "%s: %s Command not found in PATH\n", command, strerror(errno));
-			exit(EXIT_FAILURE);
+			if (execve(command, args, envp)== -1)
+			{	
+				fprintf(stderr, "%s: %s Command not found with EXECVE CMD\n", command, strerror(errno));
+				exit(EXIT_FAILURE);
+			}
 		}
-	}
 		else
 		{
-			do {
-				waitpid(PID, &status, WUNTRACED);
-			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+			fprintf(stderr, "%s: Command not found\n", command);
+		}
+	}
+	else
+	{
+		do {
+			waitpid(PID, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 		}
 	return (0);
 }
