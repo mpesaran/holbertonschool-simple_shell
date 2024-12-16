@@ -42,6 +42,9 @@ int _execvp(char *file, char *argv[])
 		}	
 		dir = strtok(NULL, ":"); /* find the next token/dir */
 	}
+	free(path_env);
+	free(path_copy);
+	free(dir);
 	return (0);
 
 }
