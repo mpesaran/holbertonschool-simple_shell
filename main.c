@@ -6,7 +6,6 @@
 */
 int main(void) {
 	char *command_line;
-	int status;
 
 	while (1)
 	{
@@ -26,7 +25,7 @@ int main(void) {
 		trailing_input(command_line);
 
 		if (strlen(command_line) > 0)
-			status = command_handler(command_line);
+			command_handler(command_line);
 		
 		free(command_line);	
 	}
