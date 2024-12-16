@@ -5,8 +5,7 @@ void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
-		printf("simple_shell$");
-		fflush(stdout);
+		write(STDOUT_FILENO, "simple_shell$ ", 14);
 	}
 }
 
