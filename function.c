@@ -31,16 +31,18 @@ char *read_input(void)
 /* Input cleanup (Removes trailing space) */
 void trailing_input(char *input_trail)
 {
-	size_t start, end;
-	char *src, *dst;
+	size_t end;
+	char *src, *dst, *start  = input_trail;
 	int in_space = 0;
 
 	if (!input_trail || strlen(input_trail) == 0)
 		return;
 
-	start = strspn(input_trail, " \t");
-	input_trail += start;
-	end = strcspn(input_trail, " \t\n");
+	while (*start == ' ' || *start == '\t')
+	{
+		start++;
+	}
+	end = strcspn(input_trail, "\n");
 	input_trail[end] = '\0';
 
 	src = input_trail;
@@ -70,18 +72,25 @@ int command_handler(char *command)
 {
 	pid_t PID;
 	int status;
-	char *args[2];
-	char *envp[] = {NULL};
+	char *args[1024];
+	int i = 0;
+	char *token;
 
 
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
-
-	if (access(command, X_OK) != 0)
+	token = strtok(command, " ");
+	while (token != NULL)
 	{
-		fprintf(stderr, "%s: Command not found\n", command);
+		args[i++] = token;
+		token = strtok(NULL, " ");
+	}
+	args[i] = NULL;
+	if (access(args[0], X_OK) != 0)
+	{
+		fprintf(stderr, "%s: Command not found\n", args[0]);
 		return(-1);
 	}
 	
@@ -93,11 +102,7 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		/* Preparation arguments for EXECVE */
-		args[0] = command;
-		args[1] = NULL;
-	
-	if (execve(command, args, envp)== -1)
+		if (execve(args[0], args, environ)== -1)
 			{	
 				perror("execve");
 				exit(EXIT_FAILURE);
