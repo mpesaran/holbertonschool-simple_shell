@@ -35,7 +35,7 @@ char *read_input(void)
 		free(input_line);
 		return (NULL);
 	}
-	if (strcmp(input_line, "exit\n") == 0)
+	if (strcmp(input_line, "exit\n") == 0) /* exit command */
 	{
 		printf("Exiting\n");
 		exit(1);
