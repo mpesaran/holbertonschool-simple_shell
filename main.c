@@ -13,7 +13,7 @@ int main(void) {
 
 		command_line = read_input();
 
-		// EOF
+		/* EOF */
 		if (command_line == NULL)
 		{
 			printf("\n");
