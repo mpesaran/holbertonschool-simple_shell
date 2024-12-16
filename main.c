@@ -14,16 +14,17 @@ int main(void) {
 		command_line = read_input();
 
 		/* EOF */
-/* 		if (command_line == NULL)
+		if (command_line == NULL)
 		{
 			printf("\n");
 			break;
-		} */
+		}
 
 		trailing_input(command_line);
 
-		command_handler(command_line);
-
+		if (strlen(command_line) > 0)
+			command_handler(command_line);
+		
 		free(command_line);	
 	}
 	
