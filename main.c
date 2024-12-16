@@ -5,7 +5,7 @@
 * Return: Always '0'
 */
 int main(void) {
-	char *command_line;
+	char *command_line, *command;
 
 	while (1)
 	{
@@ -23,9 +23,14 @@ int main(void) {
 		}
 
 		trailing_input(command_line);
-
-		if (strlen(command_line) > 0)
-			command_handler(command_line);
+		command = strtok(command_line, " ");
+		
+		while (command != NULL)
+		{
+			if (strlen(command) > 0)
+				command_handler(command);
+			command = strtok(NULL, " ");
+		}
 		
 		free(command_line);	
 	}

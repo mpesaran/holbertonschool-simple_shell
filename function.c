@@ -31,10 +31,38 @@ char *read_input(void)
 /* Input cleanup (Removes trailing space) */
 void trailing_input(char *input_trail)
 {
-	if (input_trail)
+	size_t start, end;
+	char *src, *dst;
+	int in_space = 0;
+
+	if (!input_trail || strlen(input_trail) == 0)
+		return;
+
+	start = strspn(input_trail, " \t");
+	input_trail += start;
+	end = strcspn(input_trail, " \t\n");
+	input_trail[end] = '\0';
+
+	src = input_trail;
+	dst = input_trail;
+	while (*src)
 	{
-		input_trail[strcspn(input_trail, "\n")] = '\0';
+		if (*src == ' ' || *src == '\t')
+		{
+			if (!in_space)
+			{
+				*dst = ' ';
+				in_space = 1;
+			}
+		}
+		else
+		{
+			*dst++ = *src;
+			in_space = 0;
+		}
+		src++;
 	}
+	*dst = '\0';
 }
 
 /* Command handler - executes the users input command in shell */
