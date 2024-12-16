@@ -20,7 +20,7 @@ int _execvp(char *file, char *argv[])
 		return (-1);
 	}
 	path_copy = strdup(path_env); /* make a copy of path enviroment variable */
-	
+
 	if (path_copy == NULL)
 	/*if (!path_copy)*/
 	{
