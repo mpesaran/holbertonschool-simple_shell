@@ -17,54 +17,40 @@ char *read_input(void)
 	ssize_t read_command; 
 	
 	read_command = getline(&input_line, &buffer_length, stdin);
-
 	if (read_command == -1)
 	{
 		if (input_line)
 			free(input_line);
 		return (NULL);
 	}
-
+ 
 	return (input_line);
 }
 
 /* Input cleanup (Removes trailing space) */
 void trailing_input(char *input_trail)
 {
-	size_t end;
-	char *src, *dst, *start  = input_trail;
-	int in_space = 0;
+	size_t end, start;
 
 	if (!input_trail || strlen(input_trail) == 0)
 		return;
 
-	while (*start == ' ' || *start == '\t')
+	start = 0;
+	while (input_trail[start] == ' ' || input_trail[start] == '\t')
 	{
-		start++;
-	}
-	end = strcspn(input_trail, "\n");
-	input_trail[end] = '\0';
-
-	src = input_trail;
-	dst = input_trail;
-	while (*src)
+        	start++;
+    	}
+	if (input_trail[start] =='\0')
 	{
-		if (*src == ' ' || *src == '\t')
-		{
-			if (!in_space)
-			{
-				*dst = ' ';
-				in_space = 1;
-			}
-		}
-		else
-		{
-			*dst++ = *src;
-			in_space = 0;
-		}
-		src++;
+		input_trail[0] = '\0';
+		return;
 	}
-	*dst = '\0';
+	end = strlen(input_trail) - 1;
+	while (end > start && (input_trail[end] == ' ' || input_trail[end] == '\t' || input_trail[end] == '\n'))
+	{
+        	input_trail[end] = '\0';
+        	end--;
+	}
 }
 
 /* Command handler - executes the users input command in shell */
@@ -72,18 +58,31 @@ int command_handler(char *command)
 {
 	pid_t PID;
 	int status;
-	char *args[2];
+	char *args[1024];
 	char *envp[] = {NULL};
-
-
+	char *token;
+	int i = 0;
+	
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
-
-	if (access(command, X_OK) != 0)
+	token = strtok(command, " \t");
+	while (token != NULL && i < 1023)
 	{
-		fprintf(stderr, "%s: Command not found\n", command);
+        	args[i++] = token;
+        	token = strtok(NULL, " \t\n");
+	}
+	args[i] = NULL; 
+	
+	if (args[0] == NULL)
+	{
+		fprintf(stderr, "Error: No command entered\n");
+		return (-1);
+	}
+	if (access(args[0], X_OK) != 0)
+	{
+		fprintf(stderr, "%s: Command not found\n", args[0]);
 		return(-1);
 	}
 	
@@ -95,11 +94,8 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		args[0] = command;
-		args[1] = NULL;
-
-		if (execve(command, args, envp)== -1)
-			{	
+		if (execve(args[0], args, envp)== -1)
+			{
 				perror("execve");
 				exit(EXIT_FAILURE);
 			}
