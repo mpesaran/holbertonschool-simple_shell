@@ -72,25 +72,18 @@ int command_handler(char *command)
 {
 	pid_t PID;
 	int status;
-	char *args[1024];
-	int i = 0;
-	char *token;
+	char *args[2];
+	char *envp[] = {NULL};
 
 
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
-	token = strtok(command, " ");
-	while (token != NULL)
+
+	if (access(command, X_OK) != 0)
 	{
-		args[i++] = token;
-		token = strtok(NULL, " ");
-	}
-	args[i] = NULL;
-	if (access(args[0], X_OK) != 0)
-	{
-		fprintf(stderr, "%s: Command not found\n", args[0]);
+		fprintf(stderr, "%s: Command not found\n", command);
 		return(-1);
 	}
 	
@@ -102,7 +95,10 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		if (execve(args[0], args, environ)== -1)
+		args[0] = command;
+		args[1] = NULL;
+
+		if (execve(command, args, envp)== -1)
 			{	
 				perror("execve");
 				exit(EXIT_FAILURE);
