@@ -6,6 +6,7 @@
 */
 int main(void) {
 	char *command_line;
+	char *command;
 
 	while (1)
 	{
@@ -22,10 +23,15 @@ int main(void) {
 			break;
 		}
 
-			trim_input(command_line);
-
+		command = strtok(command_line, "\n");
+		while (command != NULL)
+		{
+		trim_input(command_line);
 		if (strlen(command_line) > 0)
-			command_handler(command_line);
+			command_handler(command);
+		command =strtok(NULL, "\n");
+		}
+		
 		
 		free(command_line);	
 	}
