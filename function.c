@@ -29,12 +29,22 @@ char *read_input(void)
 }
 
 /* Input cleanup (Removes trailing space) */
-void trailing_input(char *input_trail)
+void trim_input(char *input)
 {
-	if (input_trail)
-	{
-		input_trail[strcspn(input_trail, "\n")] = '\0';
-	}
+	char *start = input;
+	char *end;
+
+	while (*start == ' ' || *start == '\n' || *start == '\t')
+		start++;
+	
+	if (start != input)
+		memmove(input, start, strlen(start) + 1);
+	
+	end = input + strlen(input) - 1;
+	while (end > input && (*end == ' ' || *end == '\n' || *end == '\t'))
+		end--; 
+
+	*(end + 1) = '\0';
 }
 
 /* Command handler - executes the users input command in shell */
@@ -44,32 +54,36 @@ int command_handler(char *command)
 	int status;
 	char *args[2];
 	char *envp[] = {NULL};
-
+	char *token;
 
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
 	}
 
-	if (access(command, X_OK) != 0)
+	token = strtok(command, "\n");
+	while (token != NULL)
 	{
-		fprintf(stderr, "%s: Command not found\n", command);
-		return(-1);
-	}
+		if (access(command, X_OK) != 0)
+		{
+			fprintf(stderr, "%s: Command not found\n", token);
+			token = strtok(NULL, "\n ");
+			continue;;
+		}
 	
-	PID = fork();
-	if (PID < 0)
-	{
-		perror("Failed to fork process");
-		return (-1);
-	}
-	else if (PID == 0)
-	{
+		PID = fork();
+		if (PID < 0)
+		{
+			perror("Failed to fork process");
+			return (-1);
+		}
+		else if (PID == 0)
+		{
 		/* Preparation arguments for EXECVE */
-		args[0] = command;
-		args[1] = NULL;
+			args[0] = token;
+			args[1] = NULL;
 	
-	if (execve(command, args, envp)== -1)
+			if (execve(token, args, envp)== -1)
 			{	
 				perror("execve");
 				exit(EXIT_FAILURE);
@@ -81,5 +95,7 @@ int command_handler(char *command)
 			waitpid(PID, &status, WUNTRACED);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
-	return WEXITSTATUS(status);
+	token = strtok(NULL, "\n ");
+}
+return(0);
 }

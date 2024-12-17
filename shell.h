@@ -15,7 +15,7 @@ extern char **environ;
 /* Function Prototypes */
 void print_prompt(void);
 char *read_input(void);
-void trailing_input(char *input_trail);
+void trim_input(char *input);
 int command_handler(char *command);
 
 

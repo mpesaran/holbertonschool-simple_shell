@@ -22,7 +22,7 @@ int main(void) {
 			break;
 		}
 
-		trailing_input(command_line);
+			trim_input(command_line);
 
 		if (strlen(command_line) > 0)
 			command_handler(command_line);
