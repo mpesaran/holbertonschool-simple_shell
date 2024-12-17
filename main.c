@@ -20,7 +20,11 @@ int main(void) {
 				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
-		
+
+		if (is_AllSpace(command_line) == 1)
+		{
+			break;
+		}
 		trailing_input(command_line);
 
 		if (strlen(command_line) > 0)
