@@ -24,6 +24,13 @@ char *read_input(void)
 		return (NULL);
 	}
  
+	if (strcmp(input_line, "exit\n") == 0) /* exit command */
+	{
+		/*printf("Exiting\n"); for debugging */
+		exit(1);
+
+	}
+
 	return (input_line);
 }
 
