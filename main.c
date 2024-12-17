@@ -6,7 +6,6 @@
 */
 int main(void) {
 	char *command_line;
-	char *command;
 
 	while (1)
 	{
@@ -14,7 +13,6 @@ int main(void) {
 			print_prompt();
 		
 		command_line = read_input();
-
 		/* EOF */
 		if (command_line == NULL)
 		{
@@ -24,13 +22,9 @@ int main(void) {
 		}
 		
 		trailing_input(command_line);
-		command = strtok(command_line, " ");
-		while (command != NULL)
-		{
-			if (strlen(command_line) > 0)
-				command_handler(command_line);
-			command = strtok(NULL, " ");
-		}
+
+		if (strlen(command_line) > 0)
+			command_handler(command_line);
 
 		free(command_line);	
 	}
