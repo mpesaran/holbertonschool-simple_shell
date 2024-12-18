@@ -151,6 +151,7 @@ int is_AllSpace(char *s)
 		free(input_line);	
 		return (1); /* true as input all space */	
 	}
+
 	free(input_line);
 	return (0);
 }
