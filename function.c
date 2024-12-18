@@ -12,7 +12,7 @@ void print_prompt(void)
 /* Read the users command input */
 char *read_input(void)
 {
-	char *input_line = NULL;
+/* 	char *input_line = NULL;
 	size_t buffer_length = 0;
 	ssize_t read_command; 
 	
@@ -25,7 +25,17 @@ char *read_input(void)
 		return (NULL);
 	}
 
-	return (input_line);
+	return (input_line); */
+
+	char *buffer = NULL;
+	size_t buffer_size = 0;
+
+	if (getline(&buffer, &buffer_size, stdin) == -1)
+	{
+		free(buffer);
+		return NULL;
+	}
+	return buffer; 
 }
 
 /* Input cleanup (Removes trailing space) */
