@@ -17,6 +17,6 @@ void print_prompt(void);
 char *read_input(void);
 void trim_input(char *input);
 int command_handler(char *command);
-
+int is_AllSpace(char *s);
 
 #endif
