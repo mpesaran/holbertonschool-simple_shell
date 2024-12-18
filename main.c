@@ -6,7 +6,7 @@
 */
 int main(void) {
 	char *command_line;
-	char *command;
+	/* char *command */
 
 	while (1)
 	{
@@ -23,19 +23,17 @@ int main(void) {
 			break;
 		}
 
-		command = strtok(command_line, "\n");
-		while (command != NULL)
-		{
+/* 		command = strtok(command_line, "\n");
+		while (command != NULL) */
+		
 		trim_input(command_line);
 		if (strlen(command_line) > 0)
-			command_handler(command);
-		command =strtok(NULL, "\n");
-		}
-		
-		
+			command_handler(command_line);
+		/* command =strtok(NULL, "\n"); */
 		free(command_line);	
 	}
-	
+
+	fclose(stdin);
 	return 0;
 }
  
