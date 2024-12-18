@@ -1,5 +1,7 @@
 #include "shell.h"
 
+/* add int is_AllSpace(char *s); */
+
 /* Print shell prompt (interactive bs non-interactive) */
 void print_prompt(void)
 {
@@ -23,6 +25,13 @@ char *read_input(void)
 			free(input_line);
 		return (NULL);
 	}
+	/* added for space detection */
+	/**
+	*if (is_AllSpace(input_line))
+	*{
+		return (NULL);
+	*}
+	*/
  
 	return (input_line);
 }
@@ -107,4 +116,32 @@ int command_handler(char *command)
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
 	return WEXITSTATUS(status);
+}
+
+/**
+ * is_AllSpace - function to check input string is all charcters of  spaces
+ *
+ * @s: input string
+ * Return: 1 if true else 0
+ */
+
+int is_AllSpace(char *s)
+{
+	char *input_line = s;
+	int count = 0;
+	size_t space_num = 0;
+
+	while (input_line[count] != '\0')
+	{	/* check for space, tab and newline */
+		if (input_line[count] == ' ' || input_line[count] == '\t' || input_line[count] == '\n')
+		{
+			space_num++;
+		}
+		count++;	
+	}
+	if (space_num == strlen(s))
+	{
+		return (1); /* true as input all space */	
+	}
+	return (0);
 }
