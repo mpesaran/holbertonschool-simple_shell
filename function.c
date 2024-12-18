@@ -148,10 +148,9 @@ int is_AllSpace(char *s)
 	}
 	if (space_num == strlen(s))
 	{
-		free(input_line);	
 		return (1); /* true as input all space */	
 	}
 
-	free(input_line);
+	/*free(input_line);*/
 	return (0);
 }
