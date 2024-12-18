@@ -17,10 +17,6 @@ void print_prompt(void);
 char *read_input(void);
 void trailing_input(char *input_trail);
 int command_handler(char *command);
-<<<<<<< HEAD
-int _execvp( char *file, char *argv[]);
-=======
 int is_AllSpace(char *s);
->>>>>>> origin/is_AllSpace
 
 #endif
