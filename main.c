@@ -18,11 +18,13 @@ int main(void) {
 		{
 			if	(isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
+			free(command_line); /* for valgrind */
 			break;
 		}
 
 		if (is_AllSpace(command_line) == 1)
-		{
+		{	
+			free(command_line); /* for valgrind */
 			break;
 		}
 		trailing_input(command_line);
