@@ -1,5 +1,8 @@
 /bin/ls
 /bin/ls
+<<<<<<< HEAD
 pwd
 ls -l
 ls -l
+=======
+>>>>>>> origin/is_AllSpace
