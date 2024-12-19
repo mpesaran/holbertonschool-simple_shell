@@ -12,7 +12,8 @@ int main(void) {
 		if (isatty(STDIN_FILENO))
 			print_prompt();
 		
-		command_line = read_input();
+		command_line = get_user_input();
+
 		/* EOF */
 		if (command_line == NULL)
 		{
@@ -22,15 +23,19 @@ int main(void) {
 			break;
 		}
 
-		if (is_AllSpace(command_line) == 1)
+		/* skip processing IF only spaces or no input */
+		if (is_only_spaces(command_line) == 1)
 		{	
 			free(command_line); /* for valgrind */
 			break;
 		}
-		trailing_input(command_line);
 
+
+		remove_trailing_spaces(command_line);
+
+		/* Execute command */
 		if (strlen(command_line) > 0)
-			command_handler(command_line);
+			execute_command(command_line);
 
 		free(command_line);	
 	}

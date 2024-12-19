@@ -15,11 +15,11 @@ extern char **environ;
 
 /* Function Prototypes */
 void print_prompt(void);
-char *read_input(void);
-void trailing_input(char *input_trail);
-int command_handler(char *command);
-char *concat_path(const char *directory_path, const char *command_name);
-char *path_finder(const char *command_finder);
-int is_AllSpace(char *s);
+char *get_user_input(void);
+void remove_trailing_spaces(char *input);
+int execute_command(char *command);
+char *combine_path(const char *directory, const char *command);
+char *find_command_in_path(const char *command);
+int is_only_spaces(char *input);
 
 #endif
