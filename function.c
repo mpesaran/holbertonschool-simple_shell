@@ -86,7 +86,7 @@ int execute_command(char *command)
 	char *args[1024];
 	char *token;
 	int i = 0;
-	char *command_path;
+	char *command_path = NULL;
 
 	/* Skip empty commands */
 	if (!command || strlen(command) == 0)
@@ -109,16 +109,35 @@ int execute_command(char *command)
 		return 0;
 	}
 
-	/* Check if command exists and can be run */
-	if (access(args[0], X_OK) == 0)
+	/* Normalize function if it contains '/' in path */
+	if (strchr(args[0], '/') != NULL)
 	{
-		command_path = strdup(args[0]);
+		char *normalized = normalize_path(args[0]);
+		if (normalized)
+			{
+				if (access(normalized, X_OK) == 0)
+				{
+					command_path = normalized;
+				}
+			else
+			{
+				free(normalized);
+				fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+				return 127;
+			}		
+		}
+		else 
+		{
+			fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+			return 127;
+		}
 	}
-	else 
+	else
 	{
 		command_path = find_command_in_path(args[0]);
 	}
 
+	/* Does the command exit? */
 	if (!command_path)
 	{
 		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
@@ -163,7 +182,7 @@ int execute_command(char *command)
 /* Connects directory path and command name into a string with '/' */
 char *combine_path(const char *directory, const char *command) 
 {	
-	char *full_path = malloc(strlen(directory) + strlen(command) + 2);
+	char *full_path = malloc(strlen(directory) + strlen(command) + 2); /* '+2' is for '/' and '\0' */
 	if (!full_path) /* Memory allocation checker */
 	{
 		perror("malloc error");
@@ -206,37 +225,32 @@ char *find_command_in_path(const char *command) {
 if (command[0] == '/') 
 {
 	if (access(command, X_OK) == 0) 
-	{
 		return strdup(command);
-	}
 	return NULL;
 }
 
 path = _getenv("PATH");
 if (!path) 
 {
-	fprintf(stderr, "PATH environment variable not found\n");
 	return NULL;
 }
 
 path_copy = strdup(path);
 if (!path_copy) 
 {
-	perror("strdup error");
 	return NULL;
 }
 
 dir = strtok(path_copy, ":");
 while (dir != NULL) 
 {
-	full_path = malloc(strlen(dir) + strlen(command) + 2);
+	full_path = combine_path(dir, command);
 	if (!full_path)
 	{
 		free(path_copy);
 		return NULL;
 	}
 	
-	sprintf(full_path, "%s/%s", dir, command);
 	if (access(full_path, X_OK) == 0)
 	{
 		free(path_copy);
@@ -251,6 +265,84 @@ free(path_copy);
 return NULL;
 }
 
+/* Normalize Paths */
+char *normalize_path(const char *path)
+{
+	char *normalized_buffer = malloc(PATH_MAX);
+	char *current_component;
+	char **path_components;
+	int component_count = 0;
+	int final_component_index;
+	char *final_path;
+
+	if (!normalized_buffer) return NULL;
+
+	/* Copy path (cp) to work with it */
+	strncpy(normalized_buffer, path, PATH_MAX - 1);
+	normalized_buffer[PATH_MAX - 1] = '\0';
+
+	/* Allocated memory for path components */
+	path_components = malloc(sizeof(char*) * PATH_MAX);
+	if (!path_components)
+	{
+		free(normalized_buffer);
+		return NULL;
+	}
+
+	/* Break apart the path into components */
+	current_component = strtok(normalized_buffer, "/");
+	while (current_component != NULL && component_count < PATH_MAX -1)
+	{
+		if (strcmp(current_component, ".") == 0) 
+		{
+			/* Skip current directory marker '.' */
+		} 
+		else if (strcmp(current_component, "..") == 0)
+		{ 
+			/* Go up one directory level by reducing component count */	
+			if (component_count > 0)
+				component_count--; 
+			}
+			else
+			{
+				/* Store valid path components */
+				path_components[component_count++] = current_component;
+			}
+			current_component = strtok(NULL, "/");
+		}
+	
+	/* Allocate memory for final path */
+	final_path = malloc(PATH_MAX);
+	if (!final_path)
+	{
+		free(path_components);
+		free(normalized_buffer);
+		return NULL;
+	}
+
+	/* (FAIL SAFE OPTION) Start with root location if original path was absolute */
+	if (path[0] == '/')
+	{
+		strcpy(final_path, "/");
+	} 
+	else
+	{
+		final_path[0] = '\0';
+	}
+	
+	/* Rebuild path with components */
+	for (final_component_index = 0; final_component_index < component_count; final_component_index++)
+	{
+		if (final_component_index > 0) 
+		strcat(final_path, "/");
+		strcat(final_path, path_components[final_component_index]);
+	}
+	
+	/* Free allocated memory */
+	free(path_components);
+	free(normalized_buffer);
+	return final_path;
+}
 /**
  * is_only_spaces - function to check input string is all charcters of  spaces
  *
