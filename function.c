@@ -113,7 +113,8 @@ int execute_command(char *command)
 	command_path = find_command_in_path(args[0]);
 	if (!command_path)
 	{
-		fprintf(stderr, "%s: Command not found\n", args[0]);
+		/*fprintf(stderr, "%s: Command not found\n", args[0]);*/
+		fprintf(stderr, "No such file or directory\n");
 		return 127; /* command not found exit status */
 	}
 	
