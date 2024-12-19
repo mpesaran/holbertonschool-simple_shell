@@ -79,6 +79,11 @@ int command_handler(char *command)
 	char *token;
 	int i = 0;
 	char *path;
+	
+	/*path_t *head = (path_t *)malloc(sizeof(path_t)); */
+	
+	path_t *head = get_path(NULL); /* populated the path data */
+
 
 	if (!command || strlen(command) == 0)
 	{
@@ -95,24 +100,34 @@ int command_handler(char *command)
 	if (args[0] == NULL)
 	{
 		fprintf(stderr, "Error: No command entered\n");
+		free(head);
 		return (-1);
 	}
-	if (access(args[0], X_OK) != 0)
-	{
-		fprintf(stderr, "%s: Command not found\n", args[0]);
-		return(-1);
-	}
-	
+	/**
+	*if (access(args[0], X_OK) != 0)
+	*{
+	*	fprintf(stderr, "%s: Command not found\n", args[0]);
+	*	free(head);
+	*	return(-1);
+	*}
+	*/
+
 	PID = fork();
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
+		free(head);
 		return (-1);
 	}
 	else if (PID == 0)
-	{
-		path = 
-		if (execve(args[0], args, envp)== -1)
+	{	
+		/*head = get_path(head);  populated the path data */
+		/*path_t *get_path(path_t *head) */
+		/*char* matched_path(path_t *head, char *cmd) */
+		path = matched_path(head, args[0]); /* return the matched path */
+		printf( "matched path : %s\n", path);
+		/* if (execve(args[0], args, envp)== -1) */
+		if (execve(path, args, envp) == -2)
 		/*if (_execvp(args[0], args) == -1)*/
 		{	
 				perror("execve");
@@ -125,6 +140,7 @@ int command_handler(char *command)
 			waitpid(PID, &status, WUNTRACED);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
+	free(head);
 	return WEXITSTATUS(status);
 }
 
