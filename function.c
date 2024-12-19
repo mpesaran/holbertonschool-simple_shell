@@ -78,7 +78,8 @@ int command_handler(char *command)
 	char *envp[] = {NULL}; /*  remove for _execvp() */
 	char *token;
 	int i = 0;
-	
+	char *path;
+
 	if (!command || strlen(command) == 0)
 	{
 		return (0);
@@ -110,9 +111,10 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		/*if (execve(args[0], args, envp)== -1) */
-		if (_execvp(args[0], args) == -1)	
-		{
+		path = 
+		if (execve(args[0], args, envp)== -1)
+		/*if (_execvp(args[0], args) == -1)*/
+		{	
 				perror("execve");
 				exit(EXIT_FAILURE);
 			}
