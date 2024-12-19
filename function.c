@@ -82,7 +82,7 @@ int command_handler(char *command)
 	
 	/*path_t *head = (path_t *)malloc(sizeof(path_t)); */
 	
-	path_t *head = get_path(NULL); /* populated the path data */
+	path_t *head = get_path(); /* populated the path data */
 
 
 	if (!command || strlen(command) == 0)

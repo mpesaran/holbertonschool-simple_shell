@@ -34,9 +34,9 @@ void trailing_input(char *input_trail);
 int command_handler(char *command);
 int is_AllSpace(char *s);
 int _execvp(char *file, char *argv[]);
-path_t *get_path(path_t *head);
+path_t *get_path(void);
 void free_path(path_t *head);
 char *matched_path(path_t *head, char *cmd);
-
+path_t *create_list(char *dir);
 
 #endif

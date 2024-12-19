@@ -56,18 +56,22 @@ int _execvp(char *file, char *argv[])
  * Return: linked list path_t
  */
 
-path_t *get_path(path_t *head)
+/*path_t *get_path(path_t *head) */
+path_t *get_path(void)
 {
 	char *path_env, *path_copy, *dir;
 	/*path_t *head = NULL;  create a pointer to path_t locally */
-	path_t *new_node = (path_t *)malloc(sizeof(path_t)); /* new node if head is NULL */
-	path_t *temp; /* temp path_t structure , no need for malloc as will copy from *head */
-	
+	/*path_t *new_node = (path_t *)malloc(sizeof(path_t));  new node if head is NULL */
+	/*path_t *temp;  temp path_t structure , no need for malloc as will copy from *head */
+	path_t  *head = NULL;
+	path_t *new_node;
+	path_t *tail = NULL;
+
 	path_env = getenv("PATH"); /* original variable from getenv */	
 	if (path_env == NULL)
         {
                 perror("Error in environment variable\n");
-                free(new_node);
+                /*free(new_node); */
 		/*exit (1);*/
 		/*return (-1);*/
 		return (NULL);
@@ -75,41 +79,72 @@ path_t *get_path(path_t *head)
 	/*path_copy = strcpy(path_env);  create local path_env for data processing */
 	path_copy = strdup(path_env);
 	
-	if (path_copy == NULL)
-        {
-                perror("Issue with path environment variable copy\n");
-                free(new_node);
-		return (NULL);
-		/*exit (1);*/
-		/*return (-1);*/
-        }
-	dir = strtok(path_copy, ":"); /* copy dir value before : delimiter */
+	/**
+	 * if (path_copy == NULL)
+        *{
+        *       perror("Issue with path environment variable copy\n");
+        *      free(new_node);
+	*	return (NULL);
+	*	exit (1);
+	*	return (-1);
+        */
+	
+	dir = strtok(path_copy, ":");  /*copy dir value before : delimiter */
 	while (dir != NULL)
 	{	
-		if (head == NULL) /* empty head node thus create 1st node */
+		new_node = create_list(dir); 
+		/*if (head == NULL)  empty head node thus create 1st node */
+		if (new_node == NULL)
 		{	
+			free(head);
+			return (NULL);
+
+			/*head = new_node; */
+			/*head->path = dir; */
+			/*head->next = NULL; */
+		}
+		if (head == NULL)
+		{
 			head = new_node;
-			head->path = dir;
-			head->next = NULL;
+		        tail = new_node;	
+			/* temp = head;  temp now hold *head  value to keep head safe */
+			/*while (temp->next != NULL) */
+				/* temp = temp->next; stroll to temp->next till its the end */
+			
+			/*new_node->path = dir; */
+			/*new_node->next = NULL; */
+			/*temp->next = new_node; */
 		}
 		else
 		{
-			temp = head; /* temp now hold *head  value to keep head safe */
-			while (temp->next != NULL)
-			{
-				temp = temp->next; /* stroll to temp->next till its the end */
-			}
-			new_node->path = dir;
-			new_node->next = NULL;
-			temp->next = new_node;
+			tail->next = new_node;
+			tail = new_node;
 		}
 		dir = strtok(NULL, ":");
 	}
 	free(path_copy); /* for valgrind */
-	return (temp);
+	return (head);
 }
 
+/**
+ * create_list - function to create a list of new node
+ * @dir : input string
+ * Return: new node;
+ */ 
 
+path_t *create_list(char *dir)
+{
+	path_t *new_node = (path_t *)malloc(sizeof(path_t));
+	if (new_node == NULL)
+	{
+		perror("Error in creating node\n");
+		free(new_node);
+		return (NULL);
+	}
+	new_node->path = strdup(dir); 
+	new_node->next = NULL;
+	return (new_node);
+}
 /**
  * free_path - function to free the linked list
  *
@@ -124,6 +159,7 @@ void free_path(path_t *head)
     {
         temp = head;
         head = head->next;
+	free(temp->path);
         free(temp);  /* Free each node */
     }
 }
@@ -136,28 +172,40 @@ void free_path(path_t *head)
  */
 char* matched_path(path_t *head, char *cmd)
 {
-	char *dir; 
+	/*char *dir ;  */
 	/*char path[100];*/
-	char *path;
+	char *full_path = NULL;
 
-	path_t *temp; 
+	/*path_t *temp = head;*/
+	path_t *current = head;
 
-	while (head != NULL)
+	/*while (head != NULL)*/
+	while (current)
 	{
-		temp = head;
-		dir = temp->path;
-		sprintf(path, "%s%s", dir, cmd); /* concentate both dir and cmd to path */
-		
-		if (access(path, X_OK) == 0) /* find the path if executable */
-		{	
-			memset(path, 0, 100); /* clear path array to prevent garbage*/
-			strcpy(path, dir); /* copy dir to path */
-			strcat(path, cmd); /* concatenate cmd to path */
-			free(dir);
-			return(path);
+		/*temp = head; */
+		/*dir = temp->path; */
+		/*sprintf(path, "%s%s", dir, cmd);  concentate both dir and cmd to path */
+		full_path = (char *)malloc(strlen(current->path) + strlen(cmd) + 2); /* +2 for '/' and '\0' */
+		if (full_path == NULL)
+		{
+			perror("Full path error \n");
+			free(full_path);
+			return (NULL);
 		}
 		
-		head = head->next;
+		sprintf(full_path, "%s/%s", current->path, cmd);
+
+		if (access(full_path, X_OK) == 0) /* find the path if executable */
+		{	
+			/*memset(path, 0, 100);  clear path array to prevent garbage*/
+			/*strcpy(path, dir);  copy dir to path */
+			/*strcat(path, cmd);  concatenate cmd to path */
+			
+			return(full_path);
+		}
+		free(full_path); /* for valgrind */
+		/*head = head->next; */
+		current = current->next;
 	}
 	return (NULL);
 }
