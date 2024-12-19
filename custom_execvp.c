@@ -48,3 +48,57 @@ int _execvp(char *file, char *argv[])
 	return (0);
 
 }
+
+
+path_t *get_path(path_t *head)
+{
+	char *path_env, *path_copy, *dir;
+	/*path_t *head = NULL;  create a pointer to path_t locally */
+	path_t *new_node = (path_t *)malloc(sizeof(path_t)); /* new node if head is NULL */
+	path_t *temp; /* temp path_t structure , no need for malloc as will copy from *head */
+	
+	path_env = getenv("PATH"); /* original variable from getenv */	
+	if (path_env == NULL)
+        {
+                perror("Error in environment variable\n");
+                free(new_node);
+		/*exit (1);*/
+		/*return (-1);*/
+		return (NULL);
+        }
+	/*path_copy = strcpy(path_env);  create local path_env for data processing */
+	path_copy = strdup(path_env);
+	
+	if (path_copy == NULL)
+        {
+                perror("Issue with path environment variable copy\n");
+                free(new_node);
+		return (NULL);
+		/*exit (1);*/
+		/*return (-1);*/
+        }
+	dir = strtok(path_copy, ":"); /* copy dir value before : delimiter */
+	while (dir != NULL)
+	{	
+		if (head == NULL) /* empty head node thus create 1st node */
+		{	
+			head = new_node;
+			head->path = dir;
+			head->next = NULL;
+		}
+		else
+		{
+			temp = head; /* temp now hold *head  value to keep head safe */
+			while (temp->next != NULL)
+			{
+				temp = temp->next; /* stroll to temp->next till its the end */
+			}
+			new_node->path = dir;
+			new_node->next = NULL;
+			temp->next = new_node;
+		}
+		dir = strtok(NULL, ":");
+	}
+	return (temp);
+}
+	

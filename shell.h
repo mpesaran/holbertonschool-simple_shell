@@ -12,11 +12,29 @@
 /* Global Variables */
 extern char **environ;
 
+
+/**
+ * struct path_list - create structure for PATH variable in env
+ *
+ * @path: string variable of PATH value
+ * @next: pointer to next node of struct path_list
+*/
+
+struct path_list {
+	char *path;
+	struct path_list *next;
+};
+
+typedef struct path_list path_t;
+
 /* Function Prototypes */
 void print_prompt(void);
 char *read_input(void);
 void trailing_input(char *input_trail);
 int command_handler(char *command);
 int is_AllSpace(char *s);
+int _execvp(char *file, char *argv[]);
+path_t *get_path(path_t *head);
+
 
 #endif

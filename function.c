@@ -75,7 +75,7 @@ int command_handler(char *command)
 	pid_t PID;
 	int status;
 	char *args[1024];
-	char *envp[] = {NULL};
+	char *envp[] = {NULL}; /*  remove for _execvp() */
 	char *token;
 	int i = 0;
 	
@@ -111,7 +111,8 @@ int command_handler(char *command)
 	else if (PID == 0)
 	{
 		if (execve(args[0], args, envp)== -1)
-			{
+		/*if (_execvp(args[0], args) == -1) */	
+		{
 				perror("execve");
 				exit(EXIT_FAILURE);
 			}
