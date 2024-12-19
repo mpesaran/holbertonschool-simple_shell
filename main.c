@@ -24,7 +24,7 @@ int main(void)
 		}
 		
 		remove_trailing_spaces(command_line);
-		
+
 		if (!is_only_spaces(command_line))
 		{
 			execute_command(command_line);
@@ -33,4 +33,3 @@ int main(void)
 	}
 	return 0;
 }
- 

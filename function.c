@@ -36,7 +36,7 @@ char *get_user_input(void)
 void remove_trailing_spaces(char *string)
 {
 	int start = 0;
-	int end = 0;
+	int end;
 
 	if (!string) return;
 
@@ -44,9 +44,9 @@ void remove_trailing_spaces(char *string)
 	end = strlen(string) -1;
 
 	/* Trim leading spaces (BEGGING PART OF INPUT STRING) */
-	while (string[start] == ' ' || string[start] || '\t')
+	while (string[start] && (string[start] == ' ' || string[start] == '\t'))
 	{
-		string++;
+		start++;
 	}
 	
 	/* Trim trailing spaces (END PART OF INPUT STRING)  */
@@ -113,7 +113,7 @@ int execute_command(char *command)
 	command_path = find_command_in_path(args[0]);
 	if (!command_path)
 	{
-		fprintf(stderr, "%s: Command not found", args[0]);
+		fprintf(stderr, "%s: Command not found\n", args[0]);
 		return 127; /* command not found exit status */
 	}
 	
@@ -128,7 +128,8 @@ int execute_command(char *command)
 
 	if (pid == 0) /* CHILD process */
 	{
-		if (execve(command_path, args, environ) == -1) {
+		if (execve(command_path, args, environ) == -1) 
+		{
 			perror(args[0]);
 			free(command_path); 
 			_exit(127);
@@ -136,14 +137,14 @@ int execute_command(char *command)
 	} 
 	else 
 	{ /* PARENT process */
-	if (waitpid(pid, &status, 0) == -1)	
-	{
-		perror("waitpid");
+		if (waitpid(pid, &status, 0) == -1)	
+		{
+			perror("waitpid");
+			free(command_path);
+			return 1;
+		}
 		free(command_path);
-		return 1;
-	}
-	free(command_path);
-	if (WIFEXITED(status)) 
+		if (WIFEXITED(status)) 
 		{
 			return WEXITSTATUS(status);
 		}
