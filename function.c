@@ -68,7 +68,7 @@ int execute_command(char *command)
 	
 	if (!command || strlen(command) == 0)
 	{
-		return (0);
+		return 0;
 	}
 
 	token = strtok(command, " \t");
@@ -83,7 +83,7 @@ int execute_command(char *command)
 	if (args[0] == NULL)
 	{
 		fprintf(stderr, "Error: No command entered\n");
-		return (-1);
+		return -1;
 	}
 
 	/* Find command in PATH */
@@ -92,7 +92,7 @@ int execute_command(char *command)
 	{
 		/* printf("%s: Testing PATH_FINDER func error"); */
 		fprintf(stderr, "%s: Command not found in PATH variable", args[0]);
-		return (-1);
+		return -1;
 	}
 	
 	/* Check if command exists and can be run */
@@ -100,7 +100,7 @@ int execute_command(char *command)
 	{
 		perror("access");
 		fprintf(stderr, "%s: Command not found\n", args[0]);
-		return(-1);
+		return -1;
 	}
 	
 	/* Create a new fork to process executed command */
@@ -109,7 +109,7 @@ int execute_command(char *command)
 	{
 		perror("Failed to fork process");
 		free(command_path); /* free failed memory */
-		return (-1);
+		return -1;
 	}
 	else if (PID == 0)
 	{
@@ -157,6 +157,7 @@ char *find_command_in_path(const char *command) {
 	while (dir) 
 	{ /* loops through the directories in PATH file */
 		char *full_path_command = combine_path(dir, command);
+
 		if (stat(full_path_command, &buffer) == 0 && (buffer.st_mode & S_IXUSR)) 
 		{
 			free(path_copy);
