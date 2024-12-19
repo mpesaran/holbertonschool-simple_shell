@@ -110,8 +110,8 @@ int command_handler(char *command)
 	}
 	else if (PID == 0)
 	{
-		if (execve(args[0], args, envp)== -1)
-		/*if (_execvp(args[0], args) == -1) */	
+		/*if (execve(args[0], args, envp)== -1) */
+		if (_execvp(args[0], args) == -1)	
 		{
 				perror("execve");
 				exit(EXIT_FAILURE);

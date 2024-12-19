@@ -137,7 +137,8 @@ void free_path(path_t *head)
 char* matched_path(path_t *head, char *cmd)
 {
 	char *dir; 
-	char path[100];
+	/*char path[100];*/
+	char *path;
 
 	path_t *temp; 
 
