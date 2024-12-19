@@ -16,10 +16,10 @@ extern char **environ;
 /* Function Prototypes */
 void print_prompt(void);
 char *get_user_input(void);
-void remove_trailing_spaces(char *input);
+void remove_trailing_spaces(char *string);
 int execute_command(char *command);
 char *combine_path(const char *directory, const char *command);
 char *find_command_in_path(const char *command);
-int is_only_spaces(char *input);
+int is_only_spaces(char *string);
 
 #endif
