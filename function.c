@@ -127,7 +127,7 @@ int command_handler(char *command)
 		path = matched_path(head, args[0]); /* return the matched path */
 		printf( "matched path : %s\n", path);
 		/* if (execve(args[0], args, envp)== -1) */
-		if (execve(path, args, envp) == -2)
+		if (execve(path, args, envp) == -1)
 		/*if (_execvp(args[0], args) == -1)*/
 		{	
 				perror("execve");
