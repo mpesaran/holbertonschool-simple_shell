@@ -54,6 +54,13 @@ void remove_trailing_spaces(char *string)
 	{
 		end--;
 	}
+
+	/* If string is just all spaces */
+	if (end < start)
+	{
+		string[0] = '\0';
+		return;
+	}
 	
 	/* Relocate string position and add null terminator */
 	if (start > 0)
@@ -80,6 +87,12 @@ int execute_command(char *command)
 	char *token;
 	int i = 0;
 	char *command_path;
+
+	/* Skip empty commands */
+	if (!command || strlen(command) == 0)
+	{
+		return 0;
+	}
 	
 	/* Tokenizing the command */
 	token = strtok(command, " \t\n");
@@ -108,7 +121,7 @@ int execute_command(char *command)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("Failed to fork process");
+		perror("fork");
 		free(command_path); /* free failed memory */
 		return 1;
 	}
@@ -116,15 +129,21 @@ int execute_command(char *command)
 	if (pid == 0) /* CHILD process */
 	{
 		if (execve(command_path, args, environ) == -1) {
-				perror(args[0]);
-				free(command_path); 
-				_exit(127);
+			perror(args[0]);
+			free(command_path); 
+			_exit(127);
 		}
-	} else 
+	} 
+	else 
 	{ /* PARENT process */
-		waitpid(pid, &status, 0);
+	if (waitpid(pid, &status, 0) == -1)	
+	{
+		perror("waitpid");
 		free(command_path);
-		if (WIFEXITED(status)) 
+		return 1;
+	}
+	free(command_path);
+	if (WIFEXITED(status)) 
 		{
 			return WEXITSTATUS(status);
 		}
@@ -165,12 +184,14 @@ if (command[0] == '/')
 path = getenv("PATH");
 if (!path) 
 {
+	fprintf(stderr, "PATH environment variable not found\n");
 	return NULL;
 }
 
 path_copy = strdup(path);
 if (!path_copy) 
 {
+	perror("strdup error");
 	return NULL;
 }
 

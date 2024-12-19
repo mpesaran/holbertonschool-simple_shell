@@ -10,8 +10,11 @@ int main(void)
 
 	while (1)
 	{
-		print_prompt();
-
+		if (isatty(STDIN_FILENO))
+		{
+			print_prompt();
+		}
+		
 		command_line = get_user_input();
 		if (command_line == NULL)
 		{
@@ -21,6 +24,7 @@ int main(void)
 		}
 		
 		remove_trailing_spaces(command_line);
+		
 		if (!is_only_spaces(command_line))
 		{
 			execute_command(command_line);
