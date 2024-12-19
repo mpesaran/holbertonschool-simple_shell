@@ -12,6 +12,8 @@
 
 /* Global Variables */
 extern char **environ;
+char *_getenv(const char *name);
+
 
 /* Function Prototypes */
 void print_prompt(void);
