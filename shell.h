@@ -35,6 +35,8 @@ int command_handler(char *command);
 int is_AllSpace(char *s);
 int _execvp(char *file, char *argv[]);
 path_t *get_path(path_t *head);
+void free_path(path_t *head);
+char *matched_path(path_t *head, char *cmd);
 
 
 #endif

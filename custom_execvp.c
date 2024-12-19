@@ -49,6 +49,12 @@ int _execvp(char *file, char *argv[])
 
 }
 
+/**
+ * get_path - function to populate directory value from PATH environemnt
+ *
+ * @head : linked list input
+ * Return: linked list path_t
+ */
 
 path_t *get_path(path_t *head)
 {
@@ -99,6 +105,60 @@ path_t *get_path(path_t *head)
 		}
 		dir = strtok(NULL, ":");
 	}
+	free(path_copy); /* for valgrind */
 	return (temp);
 }
-	
+
+
+/**
+ * free_path - function to free the linked list
+ *
+ * @head : linked list input consisting of path variable
+ * Return: void
+ */
+
+void free_path(path_t *head)
+{
+    path_t *temp;
+    while (head != NULL)
+    {
+        temp = head;
+        head = head->next;
+        free(temp);  /* Free each node */
+    }
+}
+
+/**
+ * matched_path - function to search if command is executable and its return path 
+ * @head : linked list input consisting of path variable
+ * @cmd : command to be searched
+ * Return: NULL if failed else path of the command
+ */
+char* matched_path(path_t *head, char *cmd)
+{
+	char *dir; 
+	char path[100];
+
+	path_t *temp; 
+
+	while (head != NULL)
+	{
+		temp = head;
+		dir = temp->path;
+		sprintf(path, "%s%s", dir, cmd); /* concentate both dir and cmd to path */
+		
+		if (access(path, X_OK) == 0) /* find the path if executable */
+		{	
+			memset(path, 0, 100); /* clear path array to prevent garbage*/
+			strcpy(path, dir); /* copy dir to path */
+			strcat(path, cmd); /* concatenate cmd to path */
+			free(dir);
+			return(path);
+		}
+		
+		head = head->next;
+	}
+	return (NULL);
+}
+
+
