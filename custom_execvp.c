@@ -106,7 +106,8 @@ path_t *get_path(void)
 		if (head == NULL)
 		{
 			head = new_node;
-		        tail = new_node;	
+		        tail = new_node;
+			/* tail = NULL;  this will caused segmentation error and exit */	
 			/* temp = head;  temp now hold *head  value to keep head safe */
 			/*while (temp->next != NULL) */
 				/* temp = temp->next; stroll to temp->next till its the end */
@@ -141,7 +142,7 @@ path_t *create_list(char *dir)
 		free(new_node);
 		return (NULL);
 	}
-	new_node->path = strdup(dir); 
+	new_node->path = dir;  /* duplicate */
 	new_node->next = NULL;
 	return (new_node);
 }
