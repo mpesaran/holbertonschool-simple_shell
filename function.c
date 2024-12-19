@@ -213,7 +213,7 @@ int is_only_spaces(char *string)
 
 	while (*string)
 	{
-		if (*string != ' ' && *string != '\t' && *string != '/n')
+		if (*string != ' ' && *string != '\t' && *string != '\n')
 		{
 			return 0;
 		}
