@@ -109,12 +109,20 @@ int execute_command(char *command)
 		return 0;
 	}
 
-	/* Find command in PATH */
-	command_path = find_command_in_path(args[0]);
+	/* Check if command exists and can be run */
+	if (access(args[0], X_OK) == 0)
+	{
+		command_path = strdup(args[0]);
+	}
+	else 
+	{
+		command_path = find_command_in_path(args[0]);
+	}
+
 	if (!command_path)
 	{
-		fprintf(stderr, "%s: Command not found\n", args[0]);
-		return 127; /* command not found exit status */
+		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+		return 127; /* Command not found status */
 	}
 	
 	/* Create a new fork to process executed command */
@@ -130,7 +138,7 @@ int execute_command(char *command)
 	{
 		if (execve(command_path, args, environ) == -1) 
 		{
-			perror(args[0]);
+			fprintf(stderr, "./hsh: 1: %s not found\n", args[0]);
 			free(command_path); 
 			_exit(127);
 		}
