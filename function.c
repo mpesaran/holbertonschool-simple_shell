@@ -36,9 +36,8 @@ char *read_input(void)
 	return (input_line);
 }
 
-
 /* Input cleanup (Removes trailing space) */
-void trim_input(char *input)
+void trailing_input(char *input_trail)
 {
 	size_t end, start;
 
@@ -72,6 +71,7 @@ int command_handler(char *command)
 	char *envp[] = {NULL};
 	char *token;
 	int i = 0;
+	char *find_command_in_PATH = path_finder(args[0]);
 	
 	if (!command || strlen(command) == 0)
 	{
@@ -80,8 +80,8 @@ int command_handler(char *command)
 	token = strtok(command, " \t");
 	while (token != NULL && i < 1023)
 	{
-        	args[i++] = token;
-        	token = strtok(NULL, " \t\n");
+        args[i++] = token;
+        token = strtok(NULL, " \t\n");
 	}
 	args[i] = NULL; 
 	
@@ -90,6 +90,14 @@ int command_handler(char *command)
 		fprintf(stderr, "Error: No command entered\n");
 		return (-1);
 	}
+
+	if (!find_command_in_PATH)
+	{
+		/* printf("%s: Testing PATH_FINDER func error"); */
+		fprintf(stderr, "%s: Command not found in PATH variable", args[0]);
+		return -1;
+	}
+	
 	if (access(args[0], X_OK) != 0)
 	{
 		fprintf(stderr, "%s: Command not found\n", args[0]);
@@ -100,21 +108,59 @@ int command_handler(char *command)
 	if (PID < 0)
 	{
 		perror("Failed to fork process");
-		return(-1);
+		free(find_command_in_PATH); /* free failed memory */
+		return (-1);
 	}
 	else if (PID == 0)
 	{
-		if (execve(args[0], args, envp)== -1)
+		if (execve(find_command_in_PATH, args, envp)== -1)
 			{
-				perror("execve");
+				/* printf("%s: Chilld enviroment PATH FORK ERROR point"); */
+				perror("execve failure");
+				free(find_command_in_PATH); 
 				exit(EXIT_FAILURE);
 			}
 	}
 	else
 	{
-		waitpid(PID, &status, 0);
+		do {
+			waitpid(PID, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
+	free(find_command_in_PATH);
 	return WEXITSTATUS(status);
+}
+
+/* Connects directory path and command name into a string with '/' */
+char *concat_path(const char *directory_path, const char *command_name) {
+	char *full_path = malloc(strlen(directory_path) + strlen(command_name) + 2);
+	if (!full_path) /* Memory allocation checker */
+	{
+		perror("malloc error");
+		exit(EXIT_FAILURE);
+	}
+	sprintf(full_path, "%s/%s", directory_path, command_name);
+	return full_path;
+}
+
+/* PATH FINDER: Function to search the PATH environment (FILE) */
+char *path_finder(const char *command_finder) {
+	char *path_environment_var = getenv("PATH");
+	char *copy_path = strdup(path_environment_var);
+	char *directory_spliter = strtok(copy_path, ":"); /* Split PATH directories with ":' */
+	struct stat buffer;
+
+	while (directory_spliter) { /* loops through the directories in PATH file */
+		char *full_path_command = concat_path(directory_spliter, command_finder);
+		if (stat(full_path_command, &buffer) == 0 && (buffer.st_mode & S_IXUSR)) {
+			free(copy_path);
+			return full_path_command;
+		}
+		free(full_path_command);
+		directory_spliter = strtok(NULL, ":");
+	}
+	free(copy_path);
+	return NULL;
 }
 
 /**

@@ -22,12 +22,6 @@ int main(void) {
 			break;
 		}
 
-<<<<<<< HEAD
-		
-		trim_input(command_line);
-		if (strlen(command_line) > 0)
-			command_handler(command_line);
-=======
 		if (is_AllSpace(command_line) == 1)
 		{	
 			free(command_line); /* for valgrind */
@@ -38,11 +32,9 @@ int main(void) {
 		if (strlen(command_line) > 0)
 			command_handler(command_line);
 
->>>>>>> origin/main
 		free(command_line);	
 	}
 
-	fclose(stdin);
 	return 0;
 }
  
