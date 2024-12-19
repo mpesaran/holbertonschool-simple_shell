@@ -151,7 +151,6 @@ char *find_command_in_path(const char *command) {
 	char *path_copy;
 	char *dir;
 	char *full_path;
-	struct stat buffer;
 
 /* Handles absolute PATHS */
 if (command[0] == '/') 
