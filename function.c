@@ -71,7 +71,7 @@ int command_handler(char *command)
 	char *envp[] = {NULL};
 	char *token;
 	int i = 0;
-	char *find_command_in_PATH = path_finder(args[0]);
+	char *find_command_in_PATH;
 	
 	if (!command || strlen(command) == 0)
 	{
@@ -85,11 +85,12 @@ int command_handler(char *command)
 	}
 	args[i] = NULL; 
 	
-	if (args[0] == NULL)
-	{
-		fprintf(stderr, "Error: No command entered\n");
-		return (-1);
-	}
+	find_command_in_PATH = path_finder(args[0]);
+		if (args[0] == NULL)
+		{
+			fprintf(stderr, "Error: No command entered\n");
+			return (-1);
+		}
 
 	if (!find_command_in_PATH)
 	{
