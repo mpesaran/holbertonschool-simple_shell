@@ -5,7 +5,7 @@
 */
 void build_path_list(path_list *list)
 {
-	char *path_env = getenv("PATH");
+	char *path_env = _getenv("PATH");
 	char *token;
 	char *path_env_copy = strdup(path_env);
 
@@ -62,10 +62,11 @@ char *find_in_path(const char *command, path_list *paths)
 		full_path = malloc(len);
 		if (!full_path)
 			exit(EXIT_FAILURE);
-
 		sprintf(full_path, "%s/%s", current->directory, command);
 		if (access(full_path, X_OK) == 0)
+		{
 			return (full_path);
+		}
 		free(full_path);
 		full_path = NULL;
 		current = current->next;
