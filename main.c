@@ -4,6 +4,7 @@
 * main - Entry point for simple shell
 * Return: Always '0'
 */
+
 int main(void)
 {
 	char *command_line;
