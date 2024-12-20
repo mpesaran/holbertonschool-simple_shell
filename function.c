@@ -85,7 +85,7 @@ int command_handler(char *command, path_list *paths)
 		full_path = find_in_path(args[0], paths);*/
 	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
     	{
-        	if (args[0][0] == '/')
+        	if (strchr(args[0], '/'))
         	{
             		if (access(args[0], X_OK) == 0)
             		{
@@ -94,7 +94,7 @@ int command_handler(char *command, path_list *paths)
             		else
             		{
                 		fprintf(stderr, "%s: No such file or directory\n", args[0]);
-                		return (-1);
+                		return (127);
             		}
         	}
     	}
@@ -105,7 +105,7 @@ int command_handler(char *command, path_list *paths)
 	if (!full_path)
 	{
 		fprintf(stderr, "%s: 1: %s: not found\n", "./hsh", args[0]);
-		return (127);
+		exit(127);
 	}
 	/* Execute the command */
 	status = execute_command(full_path, args);
