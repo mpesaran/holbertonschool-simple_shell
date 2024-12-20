@@ -11,7 +11,6 @@ int main(void)
 	path_list paths = {NULL, NULL};
 	
 	build_path_list(&paths);
-
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))

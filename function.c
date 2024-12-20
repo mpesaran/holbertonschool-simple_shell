@@ -105,7 +105,7 @@ int command_handler(char *command, path_list *paths)
 	if (!full_path)
 	{
 		fprintf(stderr, "%s: 1: %s: not found\n", "./hsh", args[0]);
-		return (-1);
+		return (127);
 	}
 	/* Execute the command */
 	status = execute_command(full_path, args);

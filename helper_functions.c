@@ -7,35 +7,61 @@ void build_path_list(path_list *list)
 {
 	char *path_env = _getenv("PATH");
 	char *token;
-	char *path_env_copy = strdup(path_env);
+	char *path_env_copy = NULL;
 
-	if (!path_env_copy)
-		return;
+	if (path_env && path_env[0] != '\0')
+	{
+		path_env_copy = strdup(path_env);
+		if (!path_env_copy)
+			exit(EXIT_FAILURE);
 
-	token = strtok(path_env_copy, ":");
-	while (token != NULL)
+		token = strtok(path_env_copy, ":");
+		while (token != NULL)
+		{
+			path_node *new_node = malloc(sizeof(path_node));
+
+			if (!new_node)
+				exit(EXIT_FAILURE);
+			new_node->directory = strdup(token);
+			if (!new_node->directory)
+			{
+				free(new_node);
+				exit(EXIT_FAILURE);
+			}
+			new_node->next = NULL;
+			new_node->prev = list->tail;
+			if (list->tail)
+				list->tail->next = new_node;
+			else
+				list->head = new_node;
+
+			list->tail = new_node;
+			token = strtok(NULL, ":");
+		}
+		free(path_env_copy);
+	}
+	else/* $PATH is unset or empty*/
 	{
 		path_node *new_node = malloc(sizeof(path_node));
-
 		if (!new_node)
-			exit(EXIT_FAILURE);
-		new_node->directory = strdup(token);
-		if (!new_node->directory)
 		{
 			free(new_node);
 			exit(EXIT_FAILURE);
 		}
+		new_node->directory = strdup(".");
+		if (!new_node->directory)
+	        {
+        	    free(new_node);
+       		    exit(EXIT_FAILURE);
+        	}
 		new_node->next = NULL;
 		new_node->prev = list->tail;
 		if (list->tail)
 			list->tail->next = new_node;
 		else
 			list->head = new_node;
-
 		list->tail = new_node;
-		token = strtok(NULL, ":");
 	}
-	free(path_env_copy);
 }
 /**
  * find_in_path - Searches for a command in the directories from a path list.
@@ -56,9 +82,11 @@ char *find_in_path(const char *command, path_list *paths)
 			return (strdup(command));
 		return (NULL);
 	}
-	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
+	if (!current)
     	{
-        	return (NULL);
+        	if (access(command, X_OK == 0))
+			return (strdup(command));
+		return (NULL);
     	}
 	while (current)
 	{
