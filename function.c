@@ -83,7 +83,7 @@ int command_handler(char *command, path_list *paths)
 		full_path = strdup(args[0]);
 	else
 		full_path = find_in_path(args[0], paths);*/
-	if (!getenv("PATH") || strlen(getenv("PATH")) == 0)
+	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
     	{
         	if (args[0][0] == '/')
         	{
