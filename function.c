@@ -16,8 +16,8 @@ char *read_input(void)
 {
 	char *input_line = NULL;
 	size_t buffer_length = 0;
-	ssize_t read_command; 
-	
+	ssize_t read_command;
+
 	read_command = getline(&input_line, &buffer_length, stdin);
 	if (read_command == -1)
 	{
@@ -32,7 +32,7 @@ char *read_input(void)
 		return (NULL);
 	*}
 	*/
- 
+
 	if ((strcmp(input_line, "exit\n") == 0) || (strcmp(input_line, "Exit\n") == 0) || (strcmp(input_line, "EXIT\n") == 0)) /* exit command */
 	{
 		/*printf("Exiting\n"); for debugging */
