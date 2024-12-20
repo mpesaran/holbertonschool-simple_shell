@@ -21,7 +21,7 @@ int main(void)
 		{
 			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
-			free(command_line); /* for valgrind */
+			free(command_line);
 			break;
 		}
 
