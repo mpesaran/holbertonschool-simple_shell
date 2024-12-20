@@ -56,6 +56,10 @@ char *find_in_path(const char *command, path_list *paths)
 			return (strdup(command));
 		return (NULL);
 	}
+	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
+    	{
+        	return (NULL);
+    	}
 	while (current)
 	{
 		len = strlen(current->directory) + strlen(command) + 2;

@@ -79,13 +79,32 @@ int command_handler(char *command, path_list *paths)
 		fprintf(stderr, "Error: No command entered\n");
 		return (-1);
 	}
-	if (access(args[0], X_OK) == 0)
+	/* if (access(args[0], X_OK) == 0)
 		full_path = strdup(args[0]);
 	else
-		full_path = find_in_path(args[0], paths);
+		full_path = find_in_path(args[0], paths);*/
+	if (!getenv("PATH") || strlen(getenv("PATH")) == 0)
+    	{
+        	if (args[0][0] == '/')
+        	{
+            		if (access(args[0], X_OK) == 0)
+            		{
+                		full_path = strdup(args[0]);
+            		}
+            		else
+            		{
+                		fprintf(stderr, "%s: No such file or directory\n", args[0]);
+                		return (-1);
+            		}
+        	}
+    	}
+    	else
+    	{
+        	full_path = find_in_path(args[0], paths);
+    	}
 	if (!full_path)
 	{
-		fprintf(stderr, "%s: Command not found\n", args[0]);
+		fprintf(stderr, "%s: 1: %s: not found\n", "./hsh", args[0]);
 		return (-1);
 	}
 	/* Execute the command */
