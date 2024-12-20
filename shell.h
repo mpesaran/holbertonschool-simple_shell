@@ -12,7 +12,6 @@
 /* Global Variables */
 extern char **environ;
 
-<<<<<<< HEAD
 /* Data structure for storing path directories */
 typedef struct path_node
 {
@@ -39,6 +38,4 @@ char *find_in_path(const char *command, path_list *paths);
 void free_path_list(path_list *list);
 int execute_command(char *path, char **args);
 
-=======
->>>>>>> parent of 902a9d4 (Merge pull request #22 from mpesaran/handle_path)
 #endif
