@@ -127,7 +127,7 @@ int command_handler(char *command)
 		/*path_t *get_path(path_t *head) */
 		/*char* matched_path(path_t *head, char *cmd) */
 		path = matched_path(head, args[0]); /* return the matched path */
-		printf( "matched path : %s\n", path); /** for debugging */
+		/* printf( "matched path : %s\n", path); * for debugging */
 		if (path != NULL) 
 		{	
 			/* if (execve(args[0], args, envp)== -1) */

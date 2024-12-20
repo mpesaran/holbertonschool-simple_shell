@@ -204,10 +204,16 @@ char* matched_path(path_t *head, char *cmd)
 			
 			return(full_path);
 		}
-		free(full_path); /* for valgrind */
+		/*free(full_path);  for valgrind */
 		/*head = head->next; */
 		current = current->next;
 	}
+	if (!current) /* end of linked list current */
+	{	
+		/*printf( "cmd is %s\n", cmd); debugging */
+		return(cmd); /* return cmd only */
+	}
+	free(cmd);
 	return (NULL);
 }
 
