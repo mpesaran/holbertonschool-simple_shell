@@ -74,7 +74,7 @@ char *find_in_path(const char *command, path_list *paths)
 }
 /**
  * free_path_list - Frees all nodes in the path_list linked list.
- * @list: Pointer to the path_list structure to free.
+ * @list: Pointer to the path_list structure to free
 */
 void free_path_list(path_list *list)
 {
