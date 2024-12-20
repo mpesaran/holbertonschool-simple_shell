@@ -37,7 +37,6 @@ char *normalize_path(const char *path);
 char *_getenv(const char *name);
 extern char **environ;
 
-<<<<<<< HEAD
 /* Data structure for storing path directories */
 typedef struct path_node
 {
@@ -64,6 +63,4 @@ char *find_in_path(const char *command, path_list *paths);
 void free_path_list(path_list *list);
 int execute_command(char *path, char **args);
 
-=======
->>>>>>> main
 #endif
