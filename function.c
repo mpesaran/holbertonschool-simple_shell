@@ -103,7 +103,9 @@ int command_handler(char *command)
 		free(head);
 		return (-1);
 	}
+	
 	/**
+	 * remove as access() now performed under matched_path() in custom_execvp 
 	*if (access(args[0], X_OK) != 0)
 	*{
 	*	fprintf(stderr, "%s: Command not found\n", args[0]);
@@ -125,14 +127,25 @@ int command_handler(char *command)
 		/*path_t *get_path(path_t *head) */
 		/*char* matched_path(path_t *head, char *cmd) */
 		path = matched_path(head, args[0]); /* return the matched path */
-		printf( "matched path : %s\n", path);
-		/* if (execve(args[0], args, envp)== -1) */
-		if (execve(path, args, envp) == -1)
-		/*if (_execvp(args[0], args) == -1)*/
+		printf( "matched path : %s\n", path); /** for debugging */
+		if (path != NULL) 
 		{	
+			/* if (execve(args[0], args, envp)== -1) */
+			if (execve(path, args, envp) == -1)
+			/*if (_execvp(args[0], args) == -1)*/
+			{	
 				perror("execve");
 				exit(EXIT_FAILURE);
 			}
+		}
+		else /* path not matched with PATH environ thus could be local e.g ./htbn_ls */
+		{	/* mao created a duplicate function for path == NULL so don't upset working thread */
+			if (execve(path, args, envp) == -1)
+			{
+				perror("execve");
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
 	else
 	{
