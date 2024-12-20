@@ -32,9 +32,8 @@ int main(void) {
 		if (strlen(command_line) > 0)
 			command_handler(command_line);
 
-		free(command_line);	
+		/*free(command_line);*/	
 	}
-	
+
 	return 0;
 }
- 

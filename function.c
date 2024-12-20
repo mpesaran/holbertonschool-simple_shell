@@ -33,10 +33,10 @@ char *read_input(void)
 	*}
 	*/
  
-	if (strcmp(input_line, "exit\n") == 0) /* exit command */
+	if ((strcmp(input_line, "exit\n") == 0) || (strcmp(input_line, "Exit\n") == 0) || (strcmp(input_line, "EXIT\n") == 0)) /* exit command */
 	{
 		/*printf("Exiting\n"); for debugging */
-		exit(1);
+		exit(2);
 
 	}
 
