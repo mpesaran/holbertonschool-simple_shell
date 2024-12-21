@@ -80,7 +80,6 @@ char *find_in_path(const char *command, path_list *paths)
 	{
 		if (access(command, X_OK) == 0)
 		{
-			printf("%s\n", command);
 			return (strdup(command));
 		}
 		return (NULL);
