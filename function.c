@@ -60,13 +60,11 @@ int command_handler(char *command, path_list *paths)
 	char *args[1024];
 	char *full_path = NULL;
 	char *token;
-	int i = 0;
+	int i = 0, exit_status = 0;
 	int status;
 	
 	if (!command || strlen(command) == 0)
-	{
 		return (0);
-	}
 	token = strtok(command, " \t");
 	while (token != NULL && i < 1023)
 	{
@@ -79,10 +77,17 @@ int command_handler(char *command, path_list *paths)
 		fprintf(stderr, "Error: No command entered\n");
 		return (-1);
 	}
-	/* if (access(args[0], X_OK) == 0)
-		full_path = strdup(args[0]);
-	else
-		full_path = find_in_path(args[0], paths);*/
+	if (strcmp(args[0], "env") == 0)
+	{
+		print_env();
+		return (0);
+	}
+	if (strcmp(args[0], "exit") == 0)
+	{
+		free(command);
+		free_path_list(paths);
+		exit(exit_status);
+	}
 	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
     	{
         	if (strchr(args[0], '/'))

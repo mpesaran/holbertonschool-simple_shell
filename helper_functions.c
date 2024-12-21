@@ -166,3 +166,13 @@ int execute_command(char *path, char **args)
         }
         return (WEXITSTATUS(status));
 }
+void print_env(void)
+{
+    char **env = environ;
+
+    while (*env)
+    {
+        printf("%s\n", *env);
+        env++;
+    }
+}
