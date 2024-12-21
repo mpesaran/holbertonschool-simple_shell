@@ -37,5 +37,5 @@ void build_path_list(path_list *list);
 char *find_in_path(const char *command, path_list *paths);
 void free_path_list(path_list *list);
 int execute_command(char *path, char **args);
-
+void print_env(void);
 #endif
