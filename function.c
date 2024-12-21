@@ -104,11 +104,11 @@ int command_handler(char *command, path_list *paths)
     	}
 	if (!full_path)
 	{
-		if (command)
-			free(command);
 		if (paths)
 			free_path_list(paths);
 		fprintf(stderr, "%s: 1: %s: not found\n", "./hsh", args[0]);
+		if (command)
+			free(command);
 		exit(127);
 	}
 	/* Execute the command */
