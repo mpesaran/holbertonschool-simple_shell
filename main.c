@@ -9,7 +9,7 @@ int main(void)
 {
 	char *command_line;
 	path_list paths = {NULL, NULL};
-	
+
 	build_path_list(&paths);
 	while (1)
 	{
@@ -34,6 +34,7 @@ int main(void)
 
 		if (strlen(command_line) > 0)
 			command_handler(command_line, &paths);
+		
 		free(command_line);
 	}
 	free_path_list(&paths);

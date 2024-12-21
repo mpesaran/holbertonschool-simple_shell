@@ -79,7 +79,10 @@ char *find_in_path(const char *command, path_list *paths)
 	if (command[0] == '/' || strstr(command, "./") || strstr(command, "../"))
 	{
 		if (access(command, X_OK) == 0)
+		{
+			printf("%s\n", command);
 			return (strdup(command));
+		}
 		return (NULL);
 	}
 	if (!current)
@@ -129,7 +132,7 @@ void free_path_list(path_list *list)
  * @args: Arguments to pass to the command.
  *
  * Return: Exit status of the executed command, or -1 on failure.
-*/
+ */
 int execute_command(char *path, char **args)
 {
 	pid_t PID;
@@ -154,13 +157,13 @@ int execute_command(char *path, char **args)
 			perror("execve");
 			exit(127);
 		}
-	}
-	else
-	{
-		/* Wait for the child process in the parent process */
-		do {
-			waitpid(PID, &status, WUNTRACED);
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
-	return (WEXITSTATUS(status));
+        }
+        else
+        {
+                /* Wait for the child process in the parent process */
+                do {
+                        waitpid(PID, &status, WUNTRACED);
+                } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+        }
+        return (WEXITSTATUS(status));
 }
