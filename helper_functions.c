@@ -164,6 +164,7 @@ int execute_command(char *path, char **args)
                         waitpid(PID, &status, WUNTRACED);
                 } while (!WIFEXITED(status) && !WIFSIGNALED(status));
         }
+
         return (WEXITSTATUS(status));
 }
 void print_env(void)

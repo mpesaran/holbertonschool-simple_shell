@@ -30,7 +30,7 @@ typedef struct path_list
 void print_prompt(void);
 char *read_input(void);
 void trailing_input(char *input_trail);
-int command_handler(char *command, path_list *paths);
+int command_handler(char *command, path_list *paths, int *last_status);
 int is_AllSpace(char *s);
 char *_getenv(const char *name);
 void build_path_list(path_list *list);
@@ -38,4 +38,6 @@ char *find_in_path(const char *command, path_list *paths);
 void free_path_list(path_list *list);
 int execute_command(char *path, char **args);
 void print_env(void);
+void exit_handler(char **args, path_list *paths, char *command_line, int *last_status);
+
 #endif

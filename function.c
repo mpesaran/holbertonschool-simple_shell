@@ -53,16 +53,32 @@ void trailing_input(char *input_trail)
 		end--;
 	}
 }
+void exit_handler(char **args, path_list *paths, char *command_line, int *last_status)
+{
+    int exit_code = *last_status;
+     if (args[1] != NULL)
+    {
+        exit_code = atoi(args[1]);
+        if (exit_code <= -1)
+        {
+            fprintf(stderr, "exit: Illegal number: %s\n", args[1]);
+            exit_code = 2; 
+        }
+    }
 
+    free_path_list(paths);
+    free(command_line);
+    exit(exit_code);
+}
 /* Command handler - executes the users input command in shell */
-int command_handler(char *command, path_list *paths)
+int command_handler(char *command, path_list *paths, int *last_status)
 {
 	char *args[1024];
 	char *full_path = NULL;
 	char *token;
-	int i = 0, exit_status = 0;
-	int status;
-	
+	int i = 0;
+	int status = 0;
+
 	if (!command || strlen(command) == 0)
 		return (0);
 	token = strtok(command, " \t");
@@ -84,9 +100,7 @@ int command_handler(char *command, path_list *paths)
 	}
 	if (strcmp(args[0], "exit") == 0)
 	{
-		free(command);
-		free_path_list(paths);
-		exit(exit_status);
+		exit_handler(args, paths, command, last_status);
 	}
 	if (!_getenv("PATH") || strlen(_getenv("PATH")) == 0)
     	{
@@ -118,7 +132,7 @@ int command_handler(char *command, path_list *paths)
 	}
 	/* Execute the command */
 	status = execute_command(full_path, args);
-	
+	*last_status = status;	
 	free(full_path);
 	return (status);
 }

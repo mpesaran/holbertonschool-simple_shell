@@ -9,6 +9,7 @@ int main(void)
 {
 	char *command_line;
 	path_list paths = {NULL, NULL};
+	int status = 0;
 
 	build_path_list(&paths);
 	while (1)
@@ -33,10 +34,10 @@ int main(void)
 		trailing_input(command_line);
 
 		if (strlen(command_line) > 0)
-			command_handler(command_line, &paths);
+			status = command_handler(command_line, &paths, &status);
 		
 		free(command_line);
 	}
 	free_path_list(&paths);
-	return (0);
+	return (status);
 }
