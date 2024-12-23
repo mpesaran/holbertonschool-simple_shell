@@ -2,7 +2,7 @@
 
 /**
 * main - Entry point for simple shell
-* Return: Always '0'
+* Return: status variable of type int
 */
 
 int main(void)
@@ -16,7 +16,7 @@ int main(void)
 	{
 		if (isatty(STDIN_FILENO))
 			print_prompt();
-		
+
 		command_line = read_command();
 
 		if (command_line == NULL)
@@ -27,15 +27,15 @@ int main(void)
 			break;
 		}
 		if (is_whitespace(command_line) == 1)
-                {
-                        free(command_line);/* for valgrind */
-                        continue;
-                }
+		{
+			free(command_line);/* for valgrind */
+			continue;
+		}
 		clean_command(command_line);
 
 		if (strlen(command_line) > 0)
 			status = command_handler(command_line, &paths, &status);
-		
+
 		free(command_line);
 	}
 	free_path_list(&paths);

@@ -1,36 +1,41 @@
 #include "shell.h"
+
 /**
  * append_path_node - Appends a new node to the end of a path_list
+ *
  * @list: Pointer to the path_list structure
  * @directory: Directory path to be added to the list
 */
 void append_path_node(path_list *list, const char *directory)
 {
-    path_node *new_node = malloc(sizeof(path_node));
-    if (!new_node)
-        exit(EXIT_FAILURE);
+	path_node *new_node = malloc(sizeof(path_node));
 
-    new_node->directory = strdup(directory);
-    if (!new_node->directory)
-    {
-        free(new_node);
-        exit(EXIT_FAILURE);
-    }
+	if (!new_node)
+		exit(EXIT_FAILURE);
 
-    new_node->next = NULL;
-    new_node->prev = list->tail;
+	new_node->directory = strdup(directory);
+	if (!new_node->directory)
+	{
+		free(new_node);
+		exit(EXIT_FAILURE);
+	}
 
-    if (list->tail)
-        list->tail->next = new_node;
-    else
-        list->head = new_node;
+	new_node->next = NULL;
+	new_node->prev = list->tail;
 
-    list->tail = new_node;
+	if (list->tail)
+		list->tail->next = new_node;
+	else
+		list->head = new_node;
+	list->tail = new_node;
 }
+
 /**
  * build_path_list - Builds a linked list of directories from PATH environment
+ *
  * @list: Pointer to the path_list structure to populate.
-*/
+ */
+
 void build_path_list(path_list *list)
 {
 	char *path_env = _getenv("PATH");
@@ -56,8 +61,10 @@ void build_path_list(path_list *list)
 		append_path_node(list, ".");
 	}
 }
+
 /**
  * find_in_path - Searches for a command in the directories from a path list.
+ *
  * @command: Command to search for.
  * @paths: Pointer to the path_list structure containing directories.
  *
@@ -78,11 +85,11 @@ char *find_in_path(const char *command, path_list *paths)
 		return (NULL);
 	}
 	if (!current)
-    	{
-        	if (access(command, X_OK == 0))
+	{
+		if (access(command, X_OK == 0))
 			return (strdup(command));
 		return (NULL);
-    	}
+	}
 	while (current)
 	{
 		len = strlen(current->directory) + strlen(command) + 2;
@@ -100,6 +107,7 @@ char *find_in_path(const char *command, path_list *paths)
 	}
 	return (NULL);
 }
+
 /**
  * free_path_list - Frees all nodes in the path_list linked list.
  * @list: Pointer to the path_list structure to free
@@ -120,6 +128,7 @@ void free_path_list(path_list *list)
 }
 /**
  * execute_command - Executes a command using fork and execvp.
+ *
  * @path: Path to the executable command.
  * @args: Arguments to pass to the command.
  *
@@ -149,14 +158,14 @@ int execute_command(char *path, char **args)
 			perror("execve");
 			exit(127);
 		}
-        }
-        else
-        {
-                /* Wait for the child process in the parent process */
-                do {
-                        waitpid(PID, &status, WUNTRACED);
-                } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-        }
+	}
+	else
+	{
+		/* Wait for the child process in the parent process */
+		do {
+			waitpid(PID, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
 
-        return (WEXITSTATUS(status));
+	return (WEXITSTATUS(status));
 }

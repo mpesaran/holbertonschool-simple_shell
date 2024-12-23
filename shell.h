@@ -12,7 +12,15 @@
 /* Global Variables */
 extern char **environ;
 
-/* Data structure for storing path directories */
+/**
+ * struct path_node - linked list storing for PATH directory
+ *
+ * @directory: directory variable of type string
+ * @next: pointer to next node
+ * @prev: pointer to previous node
+ * Description : data structure for storing path directories
+ */
+
 typedef struct path_node
 {
 	char *directory;
@@ -20,6 +28,13 @@ typedef struct path_node
 	struct path_node *prev;
 } path_node;
 
+/**
+ * struct path_list - link list for pointers of head or trail
+ *
+ * @head: pointer to the head/start of the list
+ * @tail: pointer to the tail/end of the list
+ * Description : link list for storing address of the head or tail of the list
+ */
 typedef struct path_list
 {
 	path_node *head;

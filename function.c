@@ -1,7 +1,10 @@
 #include "shell.h"
 
+/**
+ * print_prompt - Print shell prompt (interactive bs non-interactive)
+ * Return: void
+ */
 
-/* Print shell prompt (interactive bs non-interactive) */
 void print_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
@@ -10,7 +13,10 @@ void print_prompt(void)
 	}
 }
 
-/* Read the users command input */
+/**
+ * read_command - Read the users command input
+ * Return: input variable as string
+ */
 char *read_command(void)
 {
 	char *input = NULL;
@@ -25,7 +31,12 @@ char *read_command(void)
 	return (input);
 }
 
-/* Input cleanup (Removes trailing space) */
+/**
+ * clean_command - Input command cleanup (Removes trailing space)
+ *
+ * @cmd : input command as string
+ * Return: void
+ */
 void clean_command(char *cmd)
 {
 	size_t end, start = 0;
@@ -47,7 +58,14 @@ void clean_command(char *cmd)
 		cmd[end--] = '\0';
 }
 
-/* Command handler - executes the users input command in shell */
+/**
+ * command_handler - executes the users input command in shell
+ *
+ * @cmd : input command as string type
+ * @paths : linked list PATH variable as type path_list
+ * @last_status : program status input as integer type
+ * Return: status(updated) as integer type
+ */
 int command_handler(char *cmd, path_list *paths, int *last_status)
 {
 	char *args[1024], *full_path = NULL, *token;
@@ -69,7 +87,7 @@ int command_handler(char *cmd, path_list *paths, int *last_status)
 	}
 	if (handle_builtin(args, paths, cmd, last_status) != -1)
 		return (0);
-	
+
 	full_path = resolve_command_path(args, paths);
 	if (!full_path)
 	{
@@ -82,10 +100,10 @@ int command_handler(char *cmd, path_list *paths, int *last_status)
 }
 
 /**
- * is_AllSpace - function to check input string is all charcters of  spaces
+ * is_whitespace -function to check input string if only consist of spaces
  *
- * @s: input string
- * Return: 1 if true else 0
+ * @str: input as string type
+ * Return: integer type of 1 if true else 0
  */
 
 int is_whitespace(char *str)
