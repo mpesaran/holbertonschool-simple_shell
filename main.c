@@ -17,7 +17,7 @@ int main(void)
 		if (isatty(STDIN_FILENO))
 			print_prompt();
 		
-		command_line = read_input();
+		command_line = read_command();
 
 		if (command_line == NULL)
 		{
@@ -26,12 +26,12 @@ int main(void)
 			free(command_line);
 			break;
 		}
-		if (is_AllSpace(command_line) == 1)
+		if (is_whitespace(command_line) == 1)
                 {
                         free(command_line);/* for valgrind */
-                        break;
+                        continue;
                 }
-		trailing_input(command_line);
+		clean_command(command_line);
 
 		if (strlen(command_line) > 0)
 			status = command_handler(command_line, &paths, &status);
