@@ -1,172 +1,8 @@
 #include "shell.h"
+
 /**
- * build_path_list - Builds a linked list of directories from PATH environment
- * @list: Pointer to the path_list structure to populate.
-*/
-void build_path_list(path_list *list)
-{
-	char *path_env = _getenv("PATH");
-	char *token;
-	char *path_env_copy = NULL;
-
-	if (path_env && path_env[0] != '\0')
-	{
-		path_env_copy = strdup(path_env);
-		if (!path_env_copy)
-			exit(EXIT_FAILURE);
-
-		token = strtok(path_env_copy, ":");
-		while (token != NULL)
-		{
-			path_node *new_node = malloc(sizeof(path_node));
-
-			if (!new_node)
-				exit(EXIT_FAILURE);
-			new_node->directory = strdup(token);
-			if (!new_node->directory)
-			{
-				free(new_node);
-				exit(EXIT_FAILURE);
-			}
-			new_node->next = NULL;
-			new_node->prev = list->tail;
-			if (list->tail)
-				list->tail->next = new_node;
-			else
-				list->head = new_node;
-
-			list->tail = new_node;
-			token = strtok(NULL, ":");
-		}
-		free(path_env_copy);
-	}
-	else/* $PATH is unset or empty*/
-	{
-		path_node *new_node = malloc(sizeof(path_node));
-		if (!new_node)
-		{
-			free(new_node);
-			exit(EXIT_FAILURE);
-		}
-		new_node->directory = strdup(".");
-		if (!new_node->directory)
-	        {
-        	    free(new_node);
-       		    exit(EXIT_FAILURE);
-        	}
-		new_node->next = NULL;
-		new_node->prev = list->tail;
-		if (list->tail)
-			list->tail->next = new_node;
-		else
-			list->head = new_node;
-		list->tail = new_node;
-	}
-}
-/**
- * find_in_path - Searches for a command in the directories from a path list.
- * @command: Command to search for.
- * @paths: Pointer to the path_list structure containing directories.
- *
- * Return: Full path to the command if found, NULL otherwise.
-*/
-char *find_in_path(const char *command, path_list *paths)
-{
-	path_node *current = paths->head;
-	char *full_path = NULL;
-	size_t len;
-
-	if (command[0] == '/' || strstr(command, "./") || strstr(command, "../"))
-	{
-		if (access(command, X_OK) == 0)
-		{
-			return (strdup(command));
-		}
-		return (NULL);
-	}
-	if (!current)
-    	{
-        	if (access(command, X_OK == 0))
-			return (strdup(command));
-		return (NULL);
-    	}
-	while (current)
-	{
-		len = strlen(current->directory) + strlen(command) + 2;
-		full_path = malloc(len);
-		if (!full_path)
-			exit(EXIT_FAILURE);
-		sprintf(full_path, "%s/%s", current->directory, command);
-		if (access(full_path, X_OK) == 0)
-		{
-			return (full_path);
-		}
-		free(full_path);
-		full_path = NULL;
-		current = current->next;
-	}
-	return (NULL);
-}
-/**
- * free_path_list - Frees all nodes in the path_list linked list.
- * @list: Pointer to the path_list structure to free
-*/
-void free_path_list(path_list *list)
-{
-	path_node *current = list->head;
-
-	while (current)
-	{
-		path_node *next = current->next;
-
-		free(current->directory);
-		free(current);
-		current = next;
-	}
-	list->head = list->tail = NULL;
-}
-/**
- * execute_command - Executes a command using fork and execvp.
- * @path: Path to the executable command.
- * @args: Arguments to pass to the command.
- *
- * Return: Exit status of the executed command, or -1 on failure.
+ * print_env 
  */
-int execute_command(char *path, char **args)
-{
-	pid_t PID;
-	int status;
-
-	if (!path)
-	{
-		fprintf(stderr, "%s: command not found\n", args[0]);
-		return (127);
-	}
-	PID = fork();
-	if (PID < 0)
-	{
-		perror("Failed to fork process");
-		return (-1);
-	}
-	else if (PID == 0)
-	{
-		/* Execute the command in tihe child process */
-		if (execvp(path, args) == -1)
-		{
-			perror("execve");
-			exit(127);
-		}
-        }
-        else
-        {
-                /* Wait for the child process in the parent process */
-                do {
-                        waitpid(PID, &status, WUNTRACED);
-                } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-        }
-
-        return (WEXITSTATUS(status));
-}
 void print_env(void)
 {
     char **env = environ;
@@ -176,4 +12,80 @@ void print_env(void)
         printf("%s\n", *env);
         env++;
     }
+}
+/**
+ * _getenv - Retrieves the value of an environment variable.
+ * @name: variable name in environment
+ *
+ * Return: value corresponding to the provided variable name, NULL if not found
+ */
+char *_getenv(const char *name)
+{
+        size_t name_len = strlen(name);
+        char **env = environ;
+
+        while (*env)
+        {
+                if (strncmp(*env, name, name_len) == 0 && (*env)[name_len] == '=')
+                        return (*env + name_len + 1);
+                env++;
+        }
+        return (NULL);
+}
+/* exit shell- */
+void exit_shell(char **args, path_list *paths, char *cmd, int *last_status)
+{
+        int exit_code = *last_status;
+
+        if (args[1] != NULL)
+        {
+                exit_code = atoi(args[1]);
+                if (exit_code <= -1)
+                {
+                        fprintf(stderr, "exit: Illegal number: %s\n", args[1]);
+                        exit_code = 2;
+                }
+        }
+        free_path_list(paths);
+        free(cmd);
+        exit(exit_code);
+}
+/* handle builtin functions xit and env */
+int handle_builtin(char **args, path_list *paths, char *cmd, int *last_status)
+{
+	if (strcmp(args[0], "exit") == 0)
+	{
+		exit_shell(args, paths, cmd, last_status);
+	}
+	if (strcmp(args[0], "env") == 0)
+	{
+		print_env();
+		return (0);
+	}
+	return (-1);	
+}
+/**
+ *
+ */
+char *resolve_command_path(char **args, path_list *paths)
+{
+	char *path_env = _getenv("PATH");
+	char *full_path = NULL;
+
+	if (!path_env || strlen(path_env) == 0)
+        {
+                if (strchr(args[0], '/'))
+                {
+                        if (access(args[0], X_OK) == 0)
+                                full_path = strdup(args[0]);
+                        else
+                        {
+                                fprintf(stderr, "%s: No such file or directory\n", args[0]);
+                                return (NULL);
+                        }
+                }
+        }
+        else
+                full_path = find_in_path(args[0], paths);
+	return (full_path);
 }

@@ -28,16 +28,19 @@ typedef struct path_list
 
 /* Function Prototypes */
 void print_prompt(void);
-char *read_input(void);
-void trailing_input(char *input_trail);
+char *read_command(void);
+void clean_command(char *input);
 int command_handler(char *command, path_list *paths, int *last_status);
-int is_AllSpace(char *s);
+int is_whitespace(char *str);
 char *_getenv(const char *name);
 void build_path_list(path_list *list);
 char *find_in_path(const char *command, path_list *paths);
 void free_path_list(path_list *list);
 int execute_command(char *path, char **args);
 void print_env(void);
-void exit_handler(char **args, path_list *paths, char *command_line, int *last_status);
+void exit_shell(char **args, path_list *paths, char *cmd, int *last_status);
+int handle_builtin(char **args, path_list *paths, char *cmd, int *last_status);
+char *resolve_command_path(char **args, path_list *paths);
+void append_path_node(path_list *list, const char *directory);
 
 #endif
