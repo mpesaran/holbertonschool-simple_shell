@@ -8,7 +8,7 @@ Perform fundamental shell functions.
 
 ## Features
 
-- Dsiplays a command prompt
+- Displays a command prompt
 - Executes basic command-line instructions
 - Handles `PATH` resolutions
 - Supports built-in commands like `exit` and `env`
@@ -47,8 +47,9 @@ file_1 file_2 file_3
 
 - `main.c`: Main shell program file (Entry Point)
 - `shell.h`: Header file with list of function prototypes
-- `prompt.c`: Prompt handling functions
-- `execute.c`: Command execution logic
+- `function.c`: functions that handle inputs
+- `helper_function.c`: functions that will process and or execute
+- `path_function.c`: functions that handle PATH and lists
 
 ## Authors
 
