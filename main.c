@@ -2,34 +2,42 @@
 
 /**
 * main - Entry point for simple shell
-* Return: Always '0'
+* Return: status variable of type int
 */
-int main(void) 
+
+int main(void)
 {
 	char *command_line;
+	path_list paths = {NULL, NULL};
+	int status = 0;
 
+	build_path_list(&paths);
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-		{
 			print_prompt();
-		}
-		
-		command_line = get_user_input();
+
+		command_line = read_command();
+
 		if (command_line == NULL)
 		{
 			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
-			return 0;
+			free(command_line);
+			break;
 		}
-		
-		remove_trailing_spaces(command_line);
-
-		if (!is_only_spaces(command_line))
+		if (is_whitespace(command_line) == 1)
 		{
-			execute_command(command_line);
+			free(command_line);/* for valgrind */
+			continue;
 		}
+		clean_command(command_line);
+
+		if (strlen(command_line) > 0)
+			status = command_handler(command_line, &paths, &status);
+
 		free(command_line);
 	}
-	return 0;
+	free_path_list(&paths);
+	return (status);
 }
