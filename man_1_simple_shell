@@ -69,11 +69,11 @@ Can be one or more commands, as if the string were the argument to the system() 
     touch (Creates empty files)
     mkdir (Creates directories)
     env (Print current environment)
-    exit (exit hsh simple shell)    
+    exit (Exit hsh simple shell)    
 
 .SS argument                                                                                                                                                             
 Extra parameter in form of arguments can be added to the command.
-Please refer to manual of respective command for detail.
+Please refer to the manual of respective command for detail.
  
 .SH OPTIONS
 hsh currently does not take any options.
