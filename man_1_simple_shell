@@ -1,0 +1,96 @@
+./" Manpage for hsh
+.TH hsh 1 "6 January 2025" "1.0" "hsh"
+.SH NAME
+hsh - basic shell that can execute commands, handle arguments from the command line 
+.SH SYNOPSIS
+.B ./hsh
+.B to enter interactive mode 
+
+.SS Interactive mode
+[command [argument...]]
+
+example: 
+oem@Mao-Yoga:~/holbertonschool-simple_shell$ ./hsh                                                                                                                       
+simple_shell$ ls -l                                                                                                                                                      
+total 212                                                                                                                                                                
+-rw-rw-r-- 1 oem oem    192 Dec 24 23:24 AUTHORS.md                                                                                                                      
+-rw-rw-r-- 1 oem oem   1365 Jan  6 10:58 README.md                                                                                                                       
+-rw-rw-r-- 1 oem oem   4139 Jan  6 10:58 custom_execvp.c                                                                                                                 
+-rw-rw-r-- 1 oem oem   3439 Jan  6 10:58 func_notes.md                                                                                                                   
+-rw-rw-r-- 1 oem oem   3867 Jan  6 10:58 function.c                                                                                                                      
+-rwxrwxr-x 1 oem oem 142312 Dec 23 13:49 hbtn_ls                                                                                                                         
+-rwxrwxr-x 1 oem oem  17304 Jan  6 10:58 hsh                                                                                                                             
+-rw-rw-r-- 1 oem oem    628 Jan  6 10:58 main.c                                                                                                                          
+-rw-rw-r-- 1 oem oem    355 Jan  6 10:58 main_notes.md                                                                                                                   
+-rw-rw-r-- 1 oem oem   1874 Jan  6 17:42 man_1_simple_shell.md                                                                                                           
+-rw-rw-r-- 1 oem oem    841 Jan  6 10:58 shell.h                                                                                                                         
+drwxrwxr-x 2 oem oem   4096 Jan  6 10:58 temp                                                                                                                            
+-rw-rw-r-- 1 oem oem     80 Jan  6 10:58 test_ls_2                                                                                                                       
+-rw-rw-r-- 1 oem oem      7 Dec 24 22:32 testing.md                                                                                                                      
+simple_shell$
+
+.SS Non-interactive mode
+
+example : 
+.B echo "ls -l" | ./hsh
+total 212
+-rw-rw-r-- 1 oem oem    192 Dec 24 23:24 AUTHORS.md
+-rw-rw-r-- 1 oem oem   1365 Jan  6 10:58 README.md
+-rw-rw-r-- 1 oem oem   4139 Jan  6 10:58 custom_execvp.c
+-rw-rw-r-- 1 oem oem   3439 Jan  6 10:58 func_notes.md
+-rw-rw-r-- 1 oem oem   3867 Jan  6 10:58 function.c
+-rwxrwxr-x 1 oem oem 142312 Dec 23 13:49 hbtn_ls
+-rwxrwxr-x 1 oem oem  17304 Jan  6 10:58 hsh
+-rw-rw-r-- 1 oem oem    628 Jan  6 10:58 main.c
+-rw-rw-r-- 1 oem oem    355 Jan  6 10:58 main_notes.md
+-rw-rw-r-- 1 oem oem   1091 Jan  6 17:39 man_1_simple_shell.md
+-rw-rw-r-- 1 oem oem    841 Jan  6 10:58 shell.h
+drwxrwxr-x 2 oem oem   4096 Jan  6 10:58 temp
+-rw-rw-r-- 1 oem oem     80 Jan  6 10:58 test_ls_2
+-rw-rw-r-- 1 oem oem      7 Dec 24 22:32 testing.md
+
+
+.SH DESCRIPTION
+A basic shell script that is associated with ./sh
+Command can be executed in interactive or non interactive mode as shown in SYNOPSIS.
+
+.SH OPERAND
+
+.SS command
+Can be one or more commands, as if the string were the argument to the system() function of Ubuntu. 
+                                                                                                                                                
+.B Examples of basic commands : 
+
+    ls (List the content of the directory)
+    pwd (Prints the working directory)
+    cat (Prints file contents)
+    cp (Copies files and directories)
+    mv (Moves and renames files and directories)
+    rm (Remove files and directories)
+    touch (Creates empty files)
+    mkdir (Creates directories)
+    env (Print current environment)
+    exit (exit hsh simple shell)    
+
+.SS argument                                                                                                                                                             
+Extra parameter in form of arguments can be added to the command.
+Please refer to manual of respective command for detail.
+ 
+.SH OPTIONS
+hsh currently does not take any options.
+
+.SH BUGS
+Does not support advanced shell features.
+Limited to custom built-in command support.
+Minimal error handling.
+
+.SH AUTHOR
+written by
+
+Okky Stafford, Mahsa Pesaran and Mao Liu
+Holberton Australia
+
+.SH REPORTING BUGS
+Okky Stafford okky.mstafford@gmail.com
+Mahsa Pesaran 9873@holbertonstudents.com
+Mao Liu 9984@holbertonstudents.com 
