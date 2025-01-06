@@ -1,4 +1,3 @@
-./" Manpage for hsh
 .TH hsh 1 "6 January 2025" "1.0" "hsh"
 .SH NAME
 hsh - basic shell that can execute commands, handle arguments from the command line 
