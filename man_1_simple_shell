@@ -78,6 +78,15 @@ Please refer to manual of respective command for detail.
 .SH OPTIONS
 hsh currently does not take any options.
 
+.SH EXIT STATUS
+The following exit values shall be returned:
+    0: Success.
+    Indicates that the executed command or script was completed successfully without any errors.
+    2: Explicit exit using the exit command.
+    Returned when the user invokes the exit command with no arguments or an invalid argument (e.g., a negative number).
+    127: Command not found.
+    Indicates that the specified command does not exist or could not be found in the directories listed in the PATH environment variable.
+
 .SH BUGS
 Does not support advanced shell features.
 Limited to custom built-in command support.
